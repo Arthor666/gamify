@@ -64,7 +64,7 @@ public class Tarea implements Serializable {
 	private Dinamica dinamica;
 
 	//bi-directional many-to-one association to Status
-	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="id_status")
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler","tareas"})
 	private Status status;
