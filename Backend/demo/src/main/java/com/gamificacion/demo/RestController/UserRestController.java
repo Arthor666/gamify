@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import com.gamificacion.demo.Models.Usuario;
 import com.gamificacion.demo.Repository.IUserRepository;
 
 @RestController
+@CrossOrigin(origins = "*",allowedHeaders = "*")
 @RequestMapping("user")
 public class UserRestController {
 	@Autowired
