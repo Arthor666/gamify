@@ -1,6 +1,8 @@
 package com.gamificacion.demo.Models;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+
 import javax.persistence.*;
 
 
@@ -13,69 +15,75 @@ import javax.persistence.*;
 @NamedQuery(name="UsuarioRecompensa.findAll", query="SELECT u FROM UsuarioRecompensa u")
 public class UsuarioRecompensa implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
-	
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", updatable = false, nullable = false)
 	private int id;
 	
-	//bi-directional many-to-one association to Recompensa
-	@ManyToOne
-	@JoinColumn(name="id_recompensa")
-	private Recompensa recompensa;
-
-	//bi-directional many-to-one association to Status
 	@ManyToOne
 	@JoinColumn(name="id_status")
 	private Status status;
-
-	//bi-directional many-to-one association to Usuario
+	
+	@ManyToOne
+	@JoinColumn(name="id_recompensa")
+	private Recompensa recompensa;
+	
 	@ManyToOne
 	@JoinColumn(name="id_usuario")
 	private Usuario usuario;
 
-	public UsuarioRecompensa() {
+	@Column(name="fecha",insertable = false)	
+	private Timestamp fecha;	
+
+	
+	
+	public Timestamp getFecha() {
+		return fecha;
 	}
 
+	public void setFechaCreacion(Timestamp fecha) {
+		this.fecha = fecha;
+	}
+
+	public UsuarioRecompensa() {
+		
+	}
+	
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+	public Recompensa getRecompensa() {
+		return recompensa;
+	}
+
+	public void setRecompensa(Recompensa recompensa) {
+		this.recompensa = recompensa;
+	}
 
 	public Usuario getUsuario() {
-		return this.usuario;
+		return usuario;
 	}
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
 
-
-	public Recompensa getRecompensa() {
-		return recompensa;
-	}
-
-
-	public void setRecompensa(Recompensa recompensa) {
-		this.recompensa = recompensa;
-	}
-
-
-	public Status getStatus() {
-		return status;
-	}
-
-
-	public void setStatus(Status status) {
-		this.status = status;
-	}
-
-
-	public int getId() {
-		return id;
-	}
-
-
-	public void setId(int id) {
-		this.id = id;
-	}
 	
 	
-
+	
 }

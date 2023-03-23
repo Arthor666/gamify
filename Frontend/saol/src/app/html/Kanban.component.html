@@ -1,0 +1,47 @@
+<h1>{{proyecto.nombre}}</h1>
+<div class="add-column-button">
+  <button (click)="openCreateDialog()" mat-fab color="accent" aria-label="Example icon button with a bookmark icon">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+<div class="root">
+  <div class="board">
+    <div class="board-wrapper">
+      <div class="board-columns">
+
+        <div cdkDropList
+             cdkDropListOrientation="horizontal" class="board-columns"
+             (cdkDropListDropped)="dropGrid($event)">
+          <div cdkDragLockAxis="x" class="board-column"
+               *ngFor="let status of arrayStatus" cdkDrag>
+            <div class="column-title" cdkDragHandle>
+              {{ status.nombre }}
+            </div>
+            <div class="tasks-container"
+                 id="{{status.id}}"
+                 [cdkDropListConnectedTo]="getStatusListId()"
+                 cdkDropList
+                 [cdkDropListData]="status.tareas"
+                 (cdkDropListDropped)="drop($event)">              
+              <div  *ngFor="let tarea of status.tareas" >
+                <div *ngIf="tarea.editable; else noneDragTask">
+                  <div class="task" cdkDrag>
+                    {{ tarea.nombre }}
+                  </div>
+                </div>
+                <ng-template #noneDragTask>
+                  <div class="taskNoneEditable" >
+                    {{ tarea.nombre }}
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ import com.gamificacion.demo.Repository.IRecompensaRepository;
 
 @RestController
 @RequestMapping("recompensa")
+@CrossOrigin(origins = "*",allowedHeaders = "*")
 public class RecompensaRestController {
 	@Autowired
 	private IRecompensaRepository recompensaRepository;
@@ -38,12 +40,21 @@ public class RecompensaRestController {
     			"signature":"wdojfsiodns654684dfg"
 			}
 		  * */
-		 linkedHashMap.remove("signature");
+		 //linkedHashMap.remove("signature");
 		 Recompensa recompensa = objectMapper.convertValue(linkedHashMap,Recompensa.class);
 		 return recompensaRepository.save(recompensa);
 		 
 	 }
 	 
+	 @PostMapping("/all")
+	 private List<Recompensa> getAll(@RequestBody LinkedHashMap linkedHashMap){		
+		 return recompensaRepository.findAll();
+	 }
+	 @PostMapping("/nombre")
+	 private List<Recompensa> getByNombreLike(@RequestBody LinkedHashMap linkedHashMap){
+		 String nombre = (String) linkedHashMap.get("nombre");
+		 return recompensaRepository.findByNombreContains(nombre);
+	 }	 
 	 @PostMapping("/user/{id}")
 	 private List<Recompensa> getRecompensasByUser(@PathVariable int id,@RequestBody LinkedHashMap linkedHashMap){		 
 		 return recompensaRepository.findByUsuarioRecompensas_Usuario_Id(id);

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gamificacion.demo.Enums.ConstantsEnum;
 import com.gamificacion.demo.Functions.Functions;
 import com.gamificacion.demo.Models.Tarea;
+import com.gamificacion.demo.Models.Usuario;
 import com.gamificacion.demo.Repository.IStatusRepository;
 import com.gamificacion.demo.Repository.ITareaRepository;
 import com.gamificacion.demo.Services.FilesStorageService;
@@ -54,6 +56,13 @@ public class TareaRestController {
 		this.objectMapper = objectMapper;
 		this.statusRepository = statusRepository;
 		this.storageService = storageService;
+	}
+		
+	@PutMapping("/tarea/status")
+	public Tarea update(@RequestBody LinkedHashMap linkedHashMap) {
+		Tarea tarea = objectMapper.convertValue(linkedHashMap, Tarea.class);
+		tareaRepository.updateStatus(tarea.getStatus().getId(),tarea.getId());
+		return tarea;
 	}
 	
 	
@@ -98,47 +107,29 @@ public class TareaRestController {
 		 * */
 				
 		linkedHashMap.remove("signature");		
-		Tarea tarea = objectMapper.convertValue(linkedHashMap, Tarea.class);
-		if(tarea.getId()==0) {						
-			return tareaRepository.save(tarea);
-		}
-		Tarea tareaDesactualizada = tareaRepository.findById(tarea.getId()).get();		
-		int endedTaskIdStatus = statusRepository.findByNombre(ConstantsEnum.STATUSFINALIZADO.toString()).getId();
-		if(tareaDesactualizada.getStatus().getId() == endedTaskIdStatus) {
-			return tareaDesactualizada; //Ya no se debe de actualizar porque la tarea ya esta terminada
-		}
-		if(tarea.getId() != 0 && tarea.getStatus().getId() == endedTaskIdStatus && tarea.getSubequipo() != null) {									
-				Functions.updateUserPoints(tarea);		
-		}
-		return tareaRepository.save(tarea);
-	}
-		
-	@PostMapping("/usuario/{id}")
-	private List<Tarea> getTareasByUsuarioId(@PathVariable int id,@RequestBody LinkedHashMap linkedHashMap){
-		return tareaRepository.findBySubequipos_Usuarios_Id(id);
-		
+		Tarea tarea = objectMapper.convertValue(linkedHashMap, Tarea.class);		
+		Tarea t =tareaRepository.save(tarea);
+		for(Usuario u: t.getEtiquetados()) {
+			tareaRepository.crearnotificionEtiquetado(t.getId(),u.getId());
+		}		
+		return t;
 	}
 	
-	@PostMapping("/files")
-	private ResponseEntity<String> saveFiles(@RequestParam("files") MultipartFile[] files){
-		//Recibir el signature como param
-
-	      Arrays.asList(files).stream().forEach(file -> {
-	        storageService.save(file);
-	      });
-	      return new ResponseEntity<String>("Ok",HttpStatus.OK);
-	      
+	@PostMapping("/proyecto")
+	private List<Tarea> getTareasByProyectoId(@RequestBody LinkedHashMap linkedHashMap){
+		int id = (int) linkedHashMap.get("id");
+		return tareaRepository.findByProyecto_Id(id);
 	}
-	
-	@PostMapping("/files/{filename:.+}")
-	private ResponseEntity<Resource> getTareaFiles(@PathVariable String filename,@RequestBody LinkedHashMap linkedHashMap){
-		//Revisar Firma
-		Resource file = storageService.load(filename);
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
-		httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, file.getFilename() );
-		return new ResponseEntity<Resource>(file,httpHeaders,HttpStatus.OK);
+		
+	@PostMapping("/usuario")
+	private List<Tarea> getTareasByUsuarioId(@RequestBody LinkedHashMap linkedHashMap){
+		int id = (int) linkedHashMap.get("id");		
+		List<Tarea> tList = tareaRepository.findByAutor_Id(id);
+		tList.addAll(tareaRepository.findByEtiquetados_Id(id));
+		return tList;
 		
 	}
+		
+	
 
 }

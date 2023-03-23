@@ -3,6 +3,9 @@ package com.gamificacion.demo.Models;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -18,7 +21,8 @@ public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", updatable = false, nullable = false)
 	private int id;
 
 	private String correo;
@@ -26,37 +30,38 @@ public class Usuario implements Serializable {
 	@Column(name="is_active")
 	private boolean isActive;
 
+	@Column(name="is_available")
+	private boolean isAvailable;
+
 	private String nombre;
 
 	@Column(name="nombre_usuario")
 	private String nombreUsuario;
 
 	private String password;
+	
+	@ManyToMany(fetch = FetchType.LAZY,mappedBy = "usuarios")
+	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
+	private List<Equipo>equipos;
+	
+	@OneToMany(mappedBy = "autor")	
+	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
+	private List<Tarea> tareas;
+	
+	@ManyToMany(mappedBy = "etiquetados")
+	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
+	private List<Tarea> etiquetadas;
+	
 
 	private double puntaje;
-
-	//bi-directional many-to-one association to Equipo
-	@OneToMany(mappedBy="jefe")
+	
+	@OneToMany(mappedBy = "usuario")
 	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	private List<Equipo> equipos1;
+	private List<Notificacion> notificaciones;
 
-	//bi-directional many-to-many association to Equipo
-	@ManyToMany(mappedBy="usuarios")
-	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	private List<Equipo> equipos2;
-
-	//bi-directional many-to-one association to Solicitud
-	@OneToMany(mappedBy="usuario")
-	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	private List<Solicitud> solicituds;
-
-	//bi-directional many-to-many association to Subequipo
-	@ManyToMany(mappedBy="usuarios")
-	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	private List<Subequipo> subequipos;
 
 	//bi-directional many-to-one association to Rol
-	@ManyToOne
+	@ManyToOne	
 	@JoinColumn(name="id_rol")
 	private Rol rol;
 
@@ -91,6 +96,16 @@ public class Usuario implements Serializable {
 	public void setIsActive(boolean isActive) {
 		this.isActive = isActive;
 	}
+	
+	
+
+	public List<Notificacion> getNotificaciones() {
+		return notificaciones;
+	}
+
+	public void setNotificaciones(List<Notificacion> notificaciones) {
+		this.notificaciones = notificaciones;
+	}
 
 	public String getNombre() {
 		return this.nombre;
@@ -124,65 +139,6 @@ public class Usuario implements Serializable {
 		this.puntaje = puntaje;
 	}
 
-	public List<Equipo> getEquipos1() {
-		return this.equipos1;
-	}
-
-	public void setEquipos1(List<Equipo> equipos1) {
-		this.equipos1 = equipos1;
-	}
-
-	public Equipo addEquipos1(Equipo equipos1) {
-		getEquipos1().add(equipos1);
-		equipos1.getUsuarios().add(this);
-
-		return equipos1;
-	}
-
-	public Equipo removeEquipos1(Equipo equipos1) {
-		getEquipos1().remove(equipos1);
-		equipos1.setUsuarios(null);
-
-		return equipos1;
-	}
-
-	public List<Equipo> getEquipos2() {
-		return this.equipos2;
-	}
-
-	public void setEquipos2(List<Equipo> equipos2) {
-		this.equipos2 = equipos2;
-	}
-
-	public List<Solicitud> getSolicituds() {
-		return this.solicituds;
-	}
-
-	public void setSolicituds(List<Solicitud> solicituds) {
-		this.solicituds = solicituds;
-	}
-
-	public Solicitud addSolicitud(Solicitud solicitud) {
-		getSolicituds().add(solicitud);
-		solicitud.setUsuario(this);
-
-		return solicitud;
-	}
-
-	public Solicitud removeSolicitud(Solicitud solicitud) {
-		getSolicituds().remove(solicitud);
-		solicitud.setUsuario(null);
-
-		return solicitud;
-	}
-
-	public List<Subequipo> getSubequipos() {
-		return this.subequipos;
-	}
-
-	public void setSubequipos(List<Subequipo> subequipos) {
-		this.subequipos = subequipos;
-	}
 
 	public Rol getRol() {
 		return this.rol;
@@ -206,6 +162,16 @@ public class Usuario implements Serializable {
 
 		return usuarioRecompensa;
 	}
+	
+	
+
+	public List<Equipo> getEquipos() {
+		return equipos;
+	}
+
+	public void setEquipos(List<Equipo> equipos) {
+		this.equipos = equipos;
+	}
 
 	public UsuarioRecompensa removeUsuarioRecompensa(UsuarioRecompensa usuarioRecompensa) {
 		getUsuarioRecompensas().remove(usuarioRecompensa);
@@ -213,5 +179,32 @@ public class Usuario implements Serializable {
 
 		return usuarioRecompensa;
 	}
+
+	public List<Tarea> getTareas() {
+		return tareas;
+	}
+
+	public void setTareas(List<Tarea> tareas) {
+		this.tareas = tareas;
+	}
+
+	public List<Tarea> getEtiquetadas() {
+		return etiquetadas;
+	}
+
+	public void setEtiquetadas(List<Tarea> etiquetadas) {
+		this.etiquetadas = etiquetadas;
+	}
+
+	public boolean isAviable() {
+		return isAvailable;
+	}
+
+	public void setAviable(boolean isAviable) {
+		this.isAvailable = isAviable;
+	}
+	
+	
+	
 
 }

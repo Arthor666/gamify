@@ -1,0 +1,97 @@
+<mat-form-field class="example-full-width">
+  <mat-label>Buscar</mat-label>
+  <input [(ngModel)]="cadenaBuscar" matInput placeholder="Buscar" value="">  
+</mat-form-field>
+<button (click)="buscar()">Buscar</button>
+<div *ngIf="showChip">
+  <mat-chip-grid #chipGrid aria-label="Busqueda">
+    <mat-chip (removed)="deleteBusqueda()">
+      {{cadenaBuscar}}
+      <button matChipRemove [attr.aria-label]="'remove '">
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip>
+  </mat-chip-grid>
+</div>
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="equipoPage" multiTemplateDataRows>
+
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> Id </th>
+      <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef> Nombre </th>
+      <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="fechaCreacion">
+      <th mat-header-cell *matHeaderCellDef> Fecha de creación</th>
+      <td mat-cell *matCellDef="let element"> {{element.fechaCreacion | date}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="activo">
+      <th mat-header-cell *matHeaderCellDef> Activo </th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngIf="element.isActive;else elseBlock">
+          <mat-icon class="material-icons on">wb_incandescent</mat-icon>
+        </div>
+        <ng-template #elseBlock>
+          <mat-icon class="material-icons off">wb_incandescent</mat-icon>
+        </ng-template>
+      </td>      
+    </ng-container>
+
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+        <div class="example-element-detail"
+             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+          <div class="example-element-description">
+            <input type="hidden" [(ngModel)]="newEquipo.id" />
+            <mat-form-field class="example-full-width">
+              <mat-label>Nombre</mat-label>
+              <input [(ngModel)]="newEquipo.nombre" matInput placeholder="Nombre Equipo" value="">
+            </mat-form-field><br />
+            <mat-form-field class="example-chip-list" appearance="fill">
+              <mat-label>Miembros del equipo</mat-label>
+              <mat-chip-grid #chipGrid aria-label="Seleccionar miembro">
+                <mat-chip-row *ngFor="let usuario of newEquipo.usuarios" (removed)="remove(usuario)">
+                  {{usuario.nombre}}
+                  <button matChipRemove [attr.aria-label]="'remove ' + usuario">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </mat-chip-row>
+              </mat-chip-grid>
+              <input (keyup.enter)="getUsuariosOptions($event)" placeholder="Agregar miembro"
+                     [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes" />
+              <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                <mat-option *ngFor="let usuario of usuarioOptionList " [value]="usuario">
+                  {{usuario.nombre}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field><br />            
+            <div matTooltip="Solo puedes desactivar equipos que tienen todos sus proyectos finalizados" [matTooltipDisabled]="newEquipo.numeroProyectos == 0">
+              <mat-slide-toggle [disabled]="newEquipo.numeroProyectos != 0" [(ngModel)]="newEquipo.isActive">Equipo Activo</mat-slide-toggle>
+            </div><br />
+            <button (click)="guardar()">Guardar</button>
+            <span class="example-element-description-attribution"></span>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedColumns;"
+        class="example-element-row"
+        [class.example-expanded-row]="expandedElement === element"
+        (click)="expandir(element)">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                 showFirstLastButtons
+                 aria-label="Select page of periodic elements">
+  </mat-paginator>
+</div>

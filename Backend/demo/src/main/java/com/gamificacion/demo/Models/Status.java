@@ -18,30 +18,49 @@ public class Status implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-
-	@Column(name="class_to_work")
-	private String classToWork;
 
 	private String nombre;
 
-	//bi-directional many-to-one association to Solicitud
-	@OneToMany(mappedBy="status")
+	//bi-directional many-to-many association to Clases
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(
+		name="clase_status"
+		, joinColumns={
+			@JoinColumn(name="id_status")
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="id_clase")
+			}
+		)
 	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	private List<Solicitud> solicituds;
-
-	//bi-directional many-to-one association to Tarea
+	private List<Clases> clases;
+	
 	@OneToMany(mappedBy="status")
 	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
 	private List<Tarea> tareas;
-
-	//bi-directional many-to-one association to UsuarioRecompensa
+	
 	@OneToMany(mappedBy="status")
 	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	private List<UsuarioRecompensa> usuarioRecompensas;
-
+	private List<Proyecto> proyectos;
+	
 	public Status() {
 	}
+
+	
+	
+	public List<Proyecto> getProyectos() {
+		return proyectos;
+	}
+
+
+
+	public void setProyectos(List<Proyecto> proyectos) {
+		this.proyectos = proyectos;
+	}
+
+
 
 	public int getId() {
 		return this.id;
@@ -50,13 +69,13 @@ public class Status implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	public String getClassToWork() {
-		return this.classToWork;
+	
+	public List<Tarea> getTareas() {
+		return tareas;
 	}
 
-	public void setClassToWork(String classToWork) {
-		this.classToWork = classToWork;
+	public void setTareas(List<Tarea> tareas) {
+		this.tareas = tareas;
 	}
 
 	public String getNombre() {
@@ -67,58 +86,12 @@ public class Status implements Serializable {
 		this.nombre = nombre;
 	}
 
-	public List<Solicitud> getSolicituds() {
-		return this.solicituds;
+	public List<Clases> getClases() {
+		return this.clases;
 	}
 
-	public void setSolicituds(List<Solicitud> solicituds) {
-		this.solicituds = solicituds;
+	public void setClases(List<Clases> clases) {
+		this.clases = clases;
 	}
-
-	public Solicitud addSolicitud(Solicitud solicitud) {
-		getSolicituds().add(solicitud);
-		solicitud.setStatus(this);
-
-		return solicitud;
-	}
-
-	public Solicitud removeSolicitud(Solicitud solicitud) {
-		getSolicituds().remove(solicitud);
-		solicitud.setStatus(null);
-
-		return solicitud;
-	}
-
-	public List<Tarea> getTareas() {
-		return this.tareas;
-	}
-
-	public void setTareas(List<Tarea> tareas) {
-		this.tareas = tareas;
-	}
-
-	public Tarea addTarea(Tarea tarea) {
-		getTareas().add(tarea);
-		tarea.setStatus(this);
-
-		return tarea;
-	}
-
-	public Tarea removeTarea(Tarea tarea) {
-		getTareas().remove(tarea);
-		tarea.setStatus(null);
-
-		return tarea;
-	}
-
-	public List<UsuarioRecompensa> getUsuarioRecompensas() {
-		return usuarioRecompensas;
-	}
-
-	public void setUsuarioRecompensas(List<UsuarioRecompensa> usuarioRecompensas) {
-		this.usuarioRecompensas = usuarioRecompensas;
-	}
-
-	
 
 }

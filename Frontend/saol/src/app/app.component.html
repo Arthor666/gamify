@@ -1,0 +1,12 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<mat-toolbar>
+  <mat-toolbar-row>
+    <span>Saol</span>
+    <span class="example-spacer"></span>
+    <div *ngIf="numNotificacion > 0">
+      <div class="notificacion-count"><p class="number-notificacion">{{numNotificacion}}</p> </div> 
+    </div>    
+    <mat-icon class="example-icon" (click)="abrirNotificaciones()">notifications_none</mat-icon>    
+  </mat-toolbar-row>
+</mat-toolbar>
+<router-outlet>  </router-outlet>

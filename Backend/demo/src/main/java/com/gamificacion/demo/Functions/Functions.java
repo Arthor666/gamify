@@ -43,7 +43,7 @@ public class Functions {
 
 
 	public static void updateUserPoints(Tarea t) {
-		List<Usuario> users =  userRepository.findBySubequipos_Id(t.getSubequipo().getId());		
+		/*List<Usuario> users =  userRepository.findBySubequipos_Id(t.getSubequipo().getId());		
 		double puntosRecompensa = calculatePuntosRecompensa(t.getPuntosRecompensa(),t.getPorcentajePenalizacion(),t.getFechaTentativa());
 		for(Usuario user: users) {			
 			user.setPuntaje(user.getPuntaje() + puntosRecompensa);			
@@ -62,7 +62,7 @@ public class Functions {
 			}
 			userRepository.save(user);
 		}
-		
+		*/
 	}
 
 

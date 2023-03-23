@@ -1,0 +1,25 @@
+.example-icon {
+  padding: 0 14px;
+  
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.notificacion-count {
+  border: 1px solid red;
+  border-radius: 14px;
+  width: 28px;
+  height: 28px;
+  background-color: red;
+  text-align: center;
+  color: white;  
+}
+
+.number-notificacion {   
+  text-align: center;
+  vertical-align: middle;
+  margin:0px auto;
+  font-weight: bold;
+}

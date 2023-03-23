@@ -3,7 +3,10 @@ package com.gamificacion.demo.Models;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -18,6 +21,8 @@ public class Rol implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", updatable = false, nullable = false)
 	private int id;
 
 	@Lob
@@ -26,10 +31,11 @@ public class Rol implements Serializable {
 	private String nombre;
 
 	//bi-directional many-to-one association to Usuario
-	@OneToMany(mappedBy="rol")
-	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY,mappedBy="rol")	
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private List<Usuario> usuarios;
 
+	
 	public Rol() {
 	}
 

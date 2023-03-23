@@ -1,11 +1,13 @@
 package com.gamificacion.demo.Models;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.Serializable;
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.GenericGenerator;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.sql.Timestamp;
@@ -17,18 +19,22 @@ import java.util.List;
  * 
  */
 @Entity
+@DynamicUpdate
 @NamedQuery(name="Tarea.findAll", query="SELECT t FROM Tarea t")
 public class Tarea implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", updatable = false, nullable = false)
 	private int id;
 
 	@Lob
 	private String descripcion;
+	
+	private String nombre;
 
-	@Column(name="fecha_creacion",insertable = false,updatable = false)
+	@Column(name="fecha_creacion",insertable = false)
 	private Timestamp fechaCreacion;
 
 	@Column(name="fecha_tentativa")
@@ -37,47 +43,48 @@ public class Tarea implements Serializable {
 	@Lob
 	private String files;
 
-	@Column(name="porcentaje_penalizacion")
-	private int porcentajePenalizacion;
-
-	@Column(name="puntos_recompensa")
-	private double puntosRecompensa;
-
-	//bi-directional many-to-one association to Subequipo
-	@OneToMany(mappedBy="tarea",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JsonManagedReference
+	@ManyToOne
+	@JoinColumn(name="id_autor")
+	private Usuario autor;
+	
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "etiquetados",joinColumns = @JoinColumn(name = "id_tarea"),inverseJoinColumns = @JoinColumn(name = "id_usuario"))
 	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler","tareas"})
-	private List<Subequipo> subequipos;
-
-	//bi-directional many-to-one association to Equipo
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="id_equipo")
-	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler","tareas"})
-	private Equipo equipo;
-
-	//bi-directional many-to-one association to Dinamica
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="id_dinamica")
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler","tareas"})
-	private Dinamica dinamica;
-
-	//bi-directional many-to-one association to Status
-	@ManyToOne(fetch = FetchType.LAZY)
+	private List<Usuario>etiquetados;
+	
+	@ManyToOne
 	@JoinColumn(name="id_status")
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler","tareas"})
 	private Status status;
+		
 
-	//bi-directional many-to-one association to Subequipo
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="id_subequipo")
-	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler","tareas"})
-	private Subequipo subequipo;
+	//bi-directional many-to-one association to Proyecto
+	@ManyToOne
+	@JoinColumn(name="id_proyecto")	
+	private Proyecto proyecto;
+
+	//bi-directional many-to-one association to HistoriasUsuario
+	@ManyToOne
+	@JoinColumn(name="id_historia")
+	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)	
+	private HistoriasUsuario historiasUsuario;
+
 
 	public Tarea() {
 	}
+	
+	
+
+	public List<Usuario> getEtiquetados() {
+		return etiquetados;
+	}
+
+
+
+	public void setEtiquetados(List<Usuario> etiquetados) {
+		this.etiquetados = etiquetados;
+	}
+
+
 
 	public int getId() {
 		return this.id;
@@ -119,58 +126,12 @@ public class Tarea implements Serializable {
 		this.files = files;
 	}
 
-	public int getPorcentajePenalizacion() {
-		return this.porcentajePenalizacion;
+	public Usuario getAutor() {
+		return this.autor;
 	}
 
-	public void setPorcentajePenalizacion(int porcentajePenalizacion) {
-		this.porcentajePenalizacion = porcentajePenalizacion;
-	}
-
-	public double getPuntosRecompensa() {
-		return this.puntosRecompensa;
-	}
-
-	public void setPuntosRecompensa(double puntosRecompensa) {
-		this.puntosRecompensa = puntosRecompensa;
-	}
-
-	public List<Subequipo> getSubequipos() {
-		return this.subequipos;
-	}
-
-	public void setSubequipos(List<Subequipo> subequipos) {
-		this.subequipos = subequipos;
-	}
-
-	public Subequipo addSubequipo(Subequipo subequipo) {
-		getSubequipos().add(subequipo);
-		subequipo.setTarea(this);
-
-		return subequipo;
-	}
-
-	public Subequipo removeSubequipo(Subequipo subequipo) {
-		getSubequipos().remove(subequipo);
-		subequipo.setTarea(null);
-
-		return subequipo;
-	}
-
-	public Equipo getEquipo() {
-		return this.equipo;
-	}
-
-	public void setEquipo(Equipo equipo) {
-		this.equipo = equipo;
-	}
-
-	public Dinamica getDinamica() {
-		return this.dinamica;
-	}
-
-	public void setDinamica(Dinamica dinamica) {
-		this.dinamica = dinamica;
+	public void setAutor(Usuario autor) {
+		this.autor = autor;
 	}
 
 	public Status getStatus() {
@@ -181,12 +142,28 @@ public class Tarea implements Serializable {
 		this.status = status;
 	}
 
-	public Subequipo getSubequipo() {
-		return this.subequipo;
+	public Proyecto getProyecto() {
+		return this.proyecto;
 	}
 
-	public void setSubequipo(Subequipo subequipo) {
-		this.subequipo = subequipo;
+	public void setProyecto(Proyecto proyecto) {
+		this.proyecto = proyecto;
+	}
+
+	public HistoriasUsuario getHistoriasUsuario() {
+		return this.historiasUsuario;
+	}
+
+	public void setHistoriasUsuario(HistoriasUsuario historiasUsuario) {
+		this.historiasUsuario = historiasUsuario;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 }

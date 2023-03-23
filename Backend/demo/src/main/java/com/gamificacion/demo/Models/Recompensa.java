@@ -3,6 +3,8 @@ package com.gamificacion.demo.Models;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -18,7 +20,8 @@ public class Recompensa implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", updatable = false, nullable = false)
 	private int id;
 
 	@Lob
@@ -27,6 +30,8 @@ public class Recompensa implements Serializable {
 	private String nombre;
 
 	private double puntos;
+	
+	private String files;
 
 	//bi-directional many-to-one association to UsuarioRecompensa
 	@OneToMany(mappedBy="recompensa")
@@ -74,6 +79,14 @@ public class Recompensa implements Serializable {
 
 	public void setUsuarioRecompensas(List<UsuarioRecompensa> usuarioRecompensas) {
 		this.usuarioRecompensas = usuarioRecompensas;
+	}
+
+	public String getFiles() {
+		return files;
+	}
+
+	public void setFiles(String files) {
+		this.files = files;
 	}
 
 }
