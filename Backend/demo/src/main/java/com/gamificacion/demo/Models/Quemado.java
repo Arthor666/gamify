@@ -5,6 +5,8 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.sql.Timestamp;
 
 
@@ -29,9 +31,10 @@ public class Quemado implements Serializable {
 	private double puntosQuemado;
 
 	//bi-directional many-to-one association to Proyecto
-	@ManyToOne
-	@JoinColumn(name="id_proyecto")
-	private Proyecto proyecto;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="id_equipo")
+	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
+	private Equipo equipo;
 
 	
 	public Quemado() {
@@ -64,12 +67,15 @@ public class Quemado implements Serializable {
 		this.puntosQuemado = puntosQuemado;
 	}
 
-	public Proyecto getProyecto() {
-		return this.proyecto;
+
+	public Equipo getEquipo() {
+		return equipo;
 	}
 
-	public void setProyecto(Proyecto proyecto) {
-		this.proyecto = proyecto;
+
+	public void setEquipo(Equipo equipo) {
+		this.equipo = equipo;
 	}
 
+	
 }

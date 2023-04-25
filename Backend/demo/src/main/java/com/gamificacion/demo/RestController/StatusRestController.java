@@ -39,12 +39,14 @@ public class StatusRestController {
 	
 	@PostMapping("/status")
 	private Status save(@RequestBody LinkedHashMap linkedHashMap){
-		Status s = objectMapper.convertValue(linkedHashMap, Status.class);
-		Status status = statusRepository.findByNombre(s.getNombre());
-		if(status == null) {				
-			return statusRepository.save(s);
-		}		
-		return status;
+		Status s = objectMapper.convertValue(linkedHashMap, Status.class);		
+		return statusRepository.save(s);					
+	}
+	
+	@PostMapping("/equipo")
+	private List<Status> getByEquipoId(@RequestBody LinkedHashMap linkedHashMap){
+		int id = (int) linkedHashMap.get("id");
+		return statusRepository.findByEquipo_Id(id);
 	}
 	
 	@PostMapping("/clase")

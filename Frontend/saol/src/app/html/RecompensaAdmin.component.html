@@ -1,8 +1,8 @@
 <mat-form-field class="example-full-width">
   <mat-label>Buscar</mat-label>
   <input [(ngModel)]="cadenaBuscar" matInput placeholder="Buscar" value="">
-</mat-form-field>
-<button (click)="buscar()">Buscar</button>
+</mat-form-field><br />
+<button mat-raised-button color="primary" (click)="buscar()">Buscar</button>
 <div *ngIf="showChip">
   <mat-chip-grid #chipGrid aria-label="Busqueda">
     <mat-chip (removed)="deleteBusqueda()">
@@ -46,27 +46,12 @@
             <mat-form-field class="example-full-width">
               <mat-label>Nombre</mat-label>
               <input [(ngModel)]="newRecompensa.nombre" matInput placeholder="Nombre recompensa" value="">
-            </mat-form-field>
-            <mat-form-field class="example-full-width">
-              <mat-label>Puntos recompensa</mat-label>
-              <input type="number" [(ngModel)]="newRecompensa.puntos" matInput placeholder="Ex. 500.00" value="">
-            </mat-form-field><br />
-            <input type="file" (change)="onFileSelected($event)" name="name" value="" /><br />
-            Archivos:
-            <div *ngIf="newRecompensa.files != undefined">
-              <mat-chip-row *ngFor="let file of newRecompensa.files.split(',')" (click)="openFile(file)" (removed)="removeFile(file)" [editable]="true">
-                {{file}}
-                <button matChipRemove [attr.aria-label]="'remove ' + file">
-                  <mat-icon>cancel</mat-icon>
-                </button>
-              </mat-chip-row>
-            </div>
-            <br />
+            </mat-form-field><br />            
             <mat-form-field class="example-full-width">
               <mat-label>Descripción</mat-label>
               <textarea [(ngModel)]="newRecompensa.descripcion" matInput></textarea>
-            </mat-form-field>
-            <button (click)="guardar()">Guardar</button>
+            </mat-form-field><br />
+            <button mat-raised-button color="primary" (click)="guardar()">Guardar</button>
             <span class="example-element-description-attribution"></span>
           </div>
         </div>

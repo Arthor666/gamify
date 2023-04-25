@@ -15,6 +15,21 @@ export class RecompensaService {
 
   }
 
+  getCommonsAndProfesorId(id:number): Observable<Recompensa[]> {
+    return this.http.post<Recompensa[]>(globalEnum.url + "recompensa/profesor/commons", { "id": id }).pipe(catchError(this.handleError));
+  }
+
+  getCommons(): Observable<Recompensa[]> {
+    return this.http.post<Recompensa[]>(globalEnum.url + "recompensa/commons", {} ).pipe(catchError(this.handleError));
+  }
+
+  getByProfesorId(id: number): Observable<Recompensa[]> {
+    return this.http.post<Recompensa[]>(globalEnum.url + "recompensa/profesor", { "id": id }).pipe(catchError(this.handleError));
+  }
+
+  getByEquipoId(id: number): Observable<Recompensa> {
+    return this.http.post<Recompensa>(globalEnum.url + "recompensa/equipo", {"id":id}).pipe(catchError(this.handleError));
+  }
   getAll(): Observable<Recompensa[]> {
     return this.http.post<Recompensa[]>(globalEnum.url + "recompensa/all", {}).pipe(catchError(this.handleError));
   }

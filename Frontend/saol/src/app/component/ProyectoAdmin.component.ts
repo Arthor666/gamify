@@ -12,10 +12,14 @@ import { ProyectoService } from '../service/Proyecto.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { FileService } from '../service/File.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogFlujoAcumuladoComponent } from './DialogFlujoAcumulado.component';
+import { globalEnum } from '../globalEnum';
+import { Usuario } from '../models/Usuario';
 
 
 @Component({
-  selector: 'proyecto-admin',
+  selector: 'equipo-admin',
   templateUrl: '../html/ProyectoAdmin.component.html',
   styleUrls: ['../css/ProyectoAdmin.component.css'],
   animations: [
@@ -30,7 +34,7 @@ export class ProyectoAdminComponent implements OnInit {
   minDate: Date;
   newProyecto: any;
   equipoOptionList: Array<Equipo> = [];
-  displayedColumns: string[] = ['id', 'nombre', 'fechaCreacion','fechaEntrega','descripcion', 'puntosRecompensa','porcentajePenalizacion','activo'];
+  displayedColumns: string[] = ['id', 'nombre', 'fechaCreacion','fechaEntrega','descripcion','porcentajePenalizacion','activo'];
   proyectoPage!: MatTableDataSource<Proyecto>;
   copyProyectoPage!: MatTableDataSource<Proyecto>;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -39,17 +43,19 @@ export class ProyectoAdminComponent implements OnInit {
   cadenaBuscar: string = "";
   showChip: boolean = false;
   blob!: Blob;
+  profesorId: number;
 
-  constructor(private equipoService: EquipoService, private route: ActivatedRoute, private proyectoService: ProyectoService, private fileService: FileService, private _snackBar: MatSnackBar) {
+  constructor(private snackBar: MatSnackBar,private equipoService: EquipoService, private route: ActivatedRoute, private proyectoService: ProyectoService, private fileService: FileService, private _snackBar: MatSnackBar, private dialog: MatDialog) {
     this.minDate = new Date();
     this.newProyecto = {};
     this.files = [];
-    this.proyectoPage = new MatTableDataSource<Proyecto>([new Proyecto({"nombre":"crear equipo"})]);
+    this.proyectoPage = new MatTableDataSource<Proyecto>([new Proyecto({ "nombre": "crear equipo" })]);
+    this.profesorId = Number(JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)).id);
   }
  
 
   ngOnInit() {
-    this.proyectoService.getAll().subscribe(data => this.iniciarPaginacion(data));
+    this.proyectoService.getByProfesorId(this.profesorId).subscribe(data => this.iniciarPaginacion(data));
     
   }
   iniciarPaginacion(data: Proyecto[]): void {    
@@ -69,6 +75,16 @@ export class ProyectoAdminComponent implements OnInit {
     });
   }
 
+  abrirFlujoAcumulado(proyectoSelected: Proyecto) {
+    const dialogRef = this.dialog.open(DialogFlujoAcumuladoComponent, {
+      data: { proyecto: proyectoSelected },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });  
+  }
+
   removeFile(file: string) {
     let aux = this.newProyecto.files.split(",")
     aux.splice(aux.indexOf(file), 1);
@@ -79,7 +95,7 @@ export class ProyectoAdminComponent implements OnInit {
     this.newProyecto = element;    
     this.expandedElement = this.expandedElement === element ? null : element;
     if (this.newProyecto.id != undefined) {
-      this.equipoService.getByProyectoId(this.newProyecto.id).subscribe(data => this.newProyecto.equipo = data);
+      
     }    
   }
 
@@ -90,17 +106,26 @@ export class ProyectoAdminComponent implements OnInit {
   }
 
 
-  onFileSelected(event: any) {    
+
+  onFileSelected(event: any) {
     let size: number = 0;
-    let aux = (file: any) => {
-      if (file instanceof File) { return file.size; } return 0;
-    };
-    Array.from(event.target.files).forEach(file => size += aux(file));
+    Array.from(event.target.files).forEach(file => {
+      if (file instanceof File) {
+        size += file.size;
+      }
+    });
     if (size > 1048576) {
       this._snackBar.open("Archivos muy pesados", "Cerrar");
       return
     }
-      this.files = event.target.files;
+    this.files = event.target.files;
+    const fnames: string[] = [];
+    Array.from(this.files).forEach(file => fnames.push(file.name));
+    if (this.newProyecto.files != undefined && this.newProyecto.files != "") {
+      this.newProyecto.files += "," + fnames.join();
+    } else {
+      this.newProyecto.files = fnames.join();
+    }
   }
 
 
@@ -115,21 +140,22 @@ export class ProyectoAdminComponent implements OnInit {
     this.showChip = true;
   }
 
-  guardar() {    
+  guardar() {
+    this.newProyecto.profesor = JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)) as Usuario;
     const e = new Proyecto(this.newProyecto);
     if (this.files.length > 0) {
-      const fnames: string[] = [];
-      Array.from(this.files).forEach(file => fnames.push(file.name));
-      if (e.files != "") {
-        e.files += "," + fnames.join();
-      } else {
-        e.files += fnames.join();
-      }
+      
       const formData = new FormData();
       Array.from(this.files).forEach(file => formData.append("files", file));
       this.fileService.save(formData).subscribe(data => console.log(data));
     }
-    this.proyectoService.save(e).subscribe(data => this.proyectoPage.data.push(data));
+    this.proyectoService.save(e).subscribe(data => {
+      if (this.newProyecto.id == undefined) {
+        this.proyectoPage.data.push(data);
+        this.proyectoPage.paginator = this.paginator;        
+      }
+      this.snackBar.open("Proyecto guardado", "Ok");
+    });
 
   }
 

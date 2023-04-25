@@ -1,0 +1,20 @@
+<div class="container">  
+  <mat-card class="card">
+    <mat-card-title style="text-align: center;">Ingresa en tu cuenta</mat-card-title>
+    <br />
+    <mat-card-content style="text-align: center">
+      <mat-form-field appearance="fill">
+        <mat-label>Correo</mat-label>
+        <input [(ngModel)]="authObject.correo" matInput>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Contraseña</mat-label>
+        <input type="password" [(ngModel)]="authObject.password" matInput>
+      </mat-form-field>
+
+      <button mat-raised-button (click)="ingresar()" color="primary" cdkFocusInitial>Ingresar</button>
+    </mat-card-content><br />
+    <mat-card-footer style="text-align: center">¿No tienes cuenta?<a routerLink="/login">Registrate</a></mat-card-footer>
+  </mat-card>
+</div>

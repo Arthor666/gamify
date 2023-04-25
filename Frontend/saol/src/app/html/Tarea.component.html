@@ -1,8 +1,8 @@
 <mat-form-field class="example-full-width">
   <mat-label>Buscar</mat-label>
   <input [(ngModel)]="cadenaBuscar" matInput placeholder="Buscar" value="">
-</mat-form-field>
-<button (click)="buscar()">Buscar</button>
+</mat-form-field><br />
+<button mat-raised-button color="primary" (click)="buscar()"><mat-icon>search</mat-icon>Buscar</button>
 <div *ngIf="showChip">
   <mat-chip-grid #chipGrid aria-label="Busqueda">
     <mat-chip (removed)="deleteBusqueda()">
@@ -27,8 +27,8 @@
     </ng-container>
 
     <ng-container matColumnDef="proyecto">
-      <th mat-header-cell *matHeaderCellDef> Nombre Proyecto </th>
-      <td mat-cell *matCellDef="let element"> <div *ngIf="element.proyecto != undefined"> {{element.proyecto.nombre}} </div> </td>
+      <th mat-header-cell *matHeaderCellDef>Proyecto</th>
+      <td mat-cell *matCellDef="let element"> <div *ngIf="proyecto != undefined"> {{proyecto.nombre}} </div> </td>
     </ng-container>
 
     <ng-container matColumnDef="descripcion">
@@ -42,7 +42,7 @@
     </ng-container>
 
     <ng-container matColumnDef="fechaTentativa">
-      <th mat-header-cell *matHeaderCellDef>Fecha Tentativa</th>
+      <th mat-header-cell *matHeaderCellDef>Fecha finalización</th>
       <td mat-cell *matCellDef="let element"> {{element.fechaTentativa | date}} </td>
     </ng-container>
 
@@ -77,10 +77,12 @@
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field> <br />
 
-            <input type="file" (change)="onFileSelected($event)" name="name" value="" /> <br /><br />
+            <button type="button" mat-raised-button (click)="fileInput.click()">Subir archivo <mat-icon>attach_file</mat-icon></button>
+            <input hidden type="file" (change)="onFileSelected($event)" #fileInput name="name" value="" multiple /><br />
+
             Archivos:
             <div *ngIf="newTarea.files != undefined">
-              <mat-chip-row *ngFor="let file of newTarea.files.split(',')" (click)="openFile(file)" (removed)="removeFile(file)" [editable]="true">
+              <mat-chip-row matTooltip="Descargar" *ngFor="let file of newTarea.files.split(',')" (click)="openFile(file)" (removed)="removeFile(file)" [editable]="true">
                 {{file}}
                 <button matChipRemove [attr.aria-label]="'remove ' + file">
                   <mat-icon>cancel</mat-icon>
@@ -89,53 +91,40 @@
             </div>
             <br />
 
-            <div *ngIf="newTarea.id == undefined && newTarea.proyecto != undefined">
-              <mat-form-field appearance="fill">
-                <mat-label>Proyecto</mat-label>
-                <mat-select (selectionChange)="updateEtiquetados()" [(value)]="newTarea.proyecto.id">
-                  <mat-option *ngFor="let proyecto of proyectosOptionList" [value]="proyecto.id">
-                    {{proyecto.nombre}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-
-            <mat-form-field class="example-chip-list" appearance="fill">
+            <mat-form-field appearance="fill">
               <mat-label>Etiquetados</mat-label>
-              <mat-chip-grid #chipGrid aria-label="Seleccionar miembro">
-                <mat-chip-row *ngFor="let usuario of newTarea.etiquetados" (removed)="remove(usuario)">
-                  {{usuario.nombre}}
-                  <button matChipRemove [attr.aria-label]="'remove ' + usuario">
-                    <mat-icon>cancel</mat-icon>
-                  </button>
-                </mat-chip-row>
-              </mat-chip-grid>
-              <input placeholder="Agregar etiquetado"
-                     [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
-                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes" />
-              <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-                <div *ngIf="newTarea.proyecto != undefined && newTarea.proyecto.equipo != undefined">
-                  <mat-option *ngFor="let usuario of newTarea.proyecto.equipo.usuarios " [value]="usuario">
-                    {{usuario.nombre}}
-                  </mat-option>
-                </div>
-              </mat-autocomplete>
+              <mat-select [compareWith]="compareFunction" [(ngModel)]="newTarea.etiquetados" multiple>
+                <mat-option *ngFor="let user of usuariosSelectList" [value]="user">{{user.nombre}}</mat-option>
+              </mat-select>
             </mat-form-field>
-            <div *ngIf="newTarea.status != undefined; noneBlock">
+
+
+            <div *ngIf="newTarea.status != undefined">
               <mat-form-field appearance="fill">
                 <mat-label>Status</mat-label>
-                <mat-select [(value)]="newTarea.status.id">
-                  <mat-option *ngFor="let status of statusList" [value]="status.id">
+                <mat-select [compareWith]="compareFunction" [(ngModel)]="newTarea.status">
+                  <mat-option *ngFor="let status of statusList" [value]="status">
                     {{status.nombre}}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
             </div><br />
+            
+            <mat-form-field  appearance="fill">
+              <mat-label>Historia de usuario</mat-label>
+              <mat-select  [compareWith]="compareFunction" [(ngModel)]="newTarea.historiasUsuario">
+                <mat-option *ngFor="let hist of historiasUsuarios" [value]="hist">
+                  {{hist.nombre}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field><br />
+
+
             <mat-form-field class="example-full-width">
               <mat-label>Descripción</mat-label>
               <textarea [(ngModel)]="newTarea.descripcion" matInput></textarea>
-            </mat-form-field>
-            <button (click)="guardar()">Guardar</button>
+            </mat-form-field><br />
+            <button mat-raised-button color="primary" (click)="guardar()">Guardar</button>
             <span class="example-element-description-attribution"></span>
           </div>
         </div>

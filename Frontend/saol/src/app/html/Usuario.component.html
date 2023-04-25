@@ -66,11 +66,12 @@
               <mat-label>Nombre</mat-label>
               <input [(ngModel)]="newUsuario.nombre" matInput placeholder="Nombre Equipo" value="">
             </mat-form-field>
+            <br />
 
             <mat-form-field class="example-full-width">
               <mat-label>Nombre Usuario</mat-label>
               <input [(ngModel)]="newUsuario.nombreUsuario" matInput placeholder="Nombre Usuario" value="">
-            </mat-form-field>
+            </mat-form-field> <br />
 
             <mat-form-field class="example-full-width">
               <mat-label>Password</mat-label>
@@ -87,8 +88,8 @@
               </mat-form-field>
               </div>
 
-              <mat-slide-toggle [(ngModel)]="newUsuario.isActive">Usuario Activo</mat-slide-toggle>
-              <button (click)="guardar()">Guardar</button>
+              <mat-slide-toggle [(ngModel)]="newUsuario.isActive">Usuario Activo</mat-slide-toggle><br /><br />
+              <button mat-raised-button color="primary" (click)="guardar()">Guardar</button>
               <span class="example-element-description-attribution"></span>
             </div>
           </div>

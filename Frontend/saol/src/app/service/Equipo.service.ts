@@ -17,6 +17,10 @@ export class EquipoService {
     return this.http.post<Equipo>(globalEnum.url + "equipo/equipo", equipo).pipe(catchError(this.handleError));
   }
 
+  getByGrupoId(id: number): Observable<Equipo[]> {
+    return this.http.post<Equipo[]>(globalEnum.url + "equipo/grupo", { "id": id}).pipe(catchError(this.handleError));
+  }
+
   getCountProyectos(id: number): Observable<any> {
     return this.http.post<Equipo>(globalEnum.url + "equipo/numProyectos", {"id":id}).pipe(catchError(this.handleError));
   }

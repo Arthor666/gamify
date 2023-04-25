@@ -1,0 +1,74 @@
+<mat-form-field class="example-full-width">
+  <mat-label>Buscar</mat-label>
+  <input [(ngModel)]="cadenaBuscar" matInput placeholder="Buscar" value="">
+</mat-form-field><br />
+<button mat-raised-button color="primary" (click)="buscar()">Buscar</button>
+<div *ngIf="showChip">
+  <mat-chip-grid #chipGrid aria-label="Busqueda">
+    <mat-chip (removed)="deleteBusqueda()">
+      {{cadenaBuscar}}
+      <button matChipRemove [attr.aria-label]="'remove '">
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip>
+  </mat-chip-grid>
+</div>
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="grupoPage" multiTemplateDataRows>
+
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> Id </th>
+      <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef> Nombre </th>
+      <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="fechaCreacion">
+      <th mat-header-cell *matHeaderCellDef> Fecha de creación</th>
+      <td mat-cell *matCellDef="let element"> {{element.fechaCreacion | date}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="codigo">
+      <th mat-header-cell *matHeaderCellDef>Codigo de acceso</th>
+      <td mat-cell *matCellDef="let element"> {{element.codigoAcceso}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="equipos">
+      <th mat-header-cell *matHeaderCellDef>Ver equipos</th>
+      <td mat-cell *matCellDef="let element"><div *ngIf="element.id != undefined"><a mat-raised-button routerLink="/equipoAdmin/{{element.id}}">Ver equipos</a></div></td>
+    </ng-container>
+
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+        <div class="example-element-detail"
+             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+          <div class="example-element-description">
+
+            <mat-form-field class="example-full-width">
+              <mat-label>Nombre: </mat-label>
+              <input matInput placeholder="Ej. Ing Software 4CM1" value="" [(ngModel)]="newGrupo.nombre">
+            </mat-form-field><br />
+
+            <button mat-raised-button color="primary" (click)="guardar()">Guardar</button>
+            <span class="example-element-description-attribution"></span>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedColumns;"
+        class="example-element-row"
+        [class.example-expanded-row]="expandedElement === element"
+        (click)="expandir(element)">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                 showFirstLastButtons
+                 aria-label="Select page of periodic elements">
+  </mat-paginator>
+</div>

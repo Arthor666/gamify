@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -27,17 +28,17 @@ public class Recompensa implements Serializable {
 	@Lob
 	private String descripcion;
 
-	private String nombre;
+	private String nombre;		
 
-	private double puntos;
+	@OneToMany(fetch = FetchType.LAZY,mappedBy = "recompensa")
+	@JsonProperty(access =  JsonProperty.Access.WRITE_ONLY)
+	private List<Equipo> equipos;
 	
-	private String files;
-
-	//bi-directional many-to-one association to UsuarioRecompensa
-	@OneToMany(mappedBy="recompensa")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_profesor")
 	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	private List<UsuarioRecompensa> usuarioRecompensas;
-
+	private Usuario profesor;
+	
 	public Recompensa() {
 	}
 
@@ -52,6 +53,14 @@ public class Recompensa implements Serializable {
 	public String getDescripcion() {
 		return this.descripcion;
 	}
+	
+	public Usuario getProfesor() {
+		return profesor;
+	}
+
+	public void setProfesor(Usuario profesor) {
+		this.profesor = profesor;
+	}
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
@@ -64,29 +73,14 @@ public class Recompensa implements Serializable {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-
-	public double getPuntos() {
-		return this.puntos;
+	
+	
+	public List<Equipo> getEquipos() {
+		return equipos;
 	}
 
-	public void setPuntos(double puntos) {
-		this.puntos = puntos;
-	}
-
-	public List<UsuarioRecompensa> getUsuarioRecompensas() {
-		return usuarioRecompensas;
-	}
-
-	public void setUsuarioRecompensas(List<UsuarioRecompensa> usuarioRecompensas) {
-		this.usuarioRecompensas = usuarioRecompensas;
-	}
-
-	public String getFiles() {
-		return files;
-	}
-
-	public void setFiles(String files) {
-		this.files = files;
+	public void setEquipos(List<Equipo> equipos) {
+		this.equipos = equipos;
 	}
 
 }

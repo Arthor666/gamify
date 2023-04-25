@@ -115,10 +115,18 @@ public class TareaRestController {
 		return t;
 	}
 	
-	@PostMapping("/proyecto")
-	private List<Tarea> getTareasByProyectoId(@RequestBody LinkedHashMap linkedHashMap){
+	
+	@PostMapping("/equipo")
+	private List<Tarea> getTareasByEquipoId(@RequestBody LinkedHashMap linkedHashMap){
 		int id = (int) linkedHashMap.get("id");
-		return tareaRepository.findByProyecto_Id(id);
+		return tareaRepository.findByEquipo_Id(id);
+	}
+	
+	@PostMapping("/autor/equipo")
+	private List<Tarea> getTareasByAutorIdAndEquipoId(@RequestBody LinkedHashMap linkedHashMap){
+		int idUsuario = (int) linkedHashMap.get("idUsuario");
+		int idEquipo = (int) linkedHashMap.get("idEquipo");
+		return tareaRepository.findByAutor_IdAndEquipo_IdOrderByFechaTentativaAsc(idUsuario,idEquipo);
 	}
 		
 	@PostMapping("/usuario")
@@ -128,6 +136,12 @@ public class TareaRestController {
 		tList.addAll(tareaRepository.findByEtiquetados_Id(id));
 		return tList;
 		
+	}
+	
+	@PostMapping("/nombre")
+	private List<Tarea> getTareasByNombreLike(@RequestBody LinkedHashMap linkedHashMap){
+		String nombre = (String) linkedHashMap.get("nombre");
+		return tareaRepository.findByNombreContains(nombre);
 	}
 		
 	

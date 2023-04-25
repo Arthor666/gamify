@@ -18,4 +18,6 @@ public interface IStatusRepository extends JpaRepository<Status, Integer>  {
 	Status findByNombre(String nombre);
 
 	List<Status> findByClases_nombre(String classToWork);
+
+	List<Status> findByEquipo_Id(int id);
 }

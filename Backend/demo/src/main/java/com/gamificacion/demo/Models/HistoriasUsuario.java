@@ -38,10 +38,10 @@ public class HistoriasUsuario implements Serializable {
 	private double puntosHistoria;
 
 	//bi-directional many-to-one association to Proyecto
-	@ManyToOne
-	@JoinColumn(name="id_proyecto")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="id_equipo")
 	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	private Proyecto proyecto;
+	private Equipo equipo;
 
 	//bi-directional many-to-one association to Tarea
 	@OneToMany(mappedBy="historiasUsuario")
@@ -94,12 +94,12 @@ public class HistoriasUsuario implements Serializable {
 		this.puntosHistoria = puntosHistoria;
 	}
 
-	public Proyecto getProyecto() {
-		return this.proyecto;
+	public Equipo getEquipo() {
+		return equipo;
 	}
 
-	public void setProyecto(Proyecto proyecto) {
-		this.proyecto = proyecto;
+	public void setEquipo(Equipo equipo) {
+		this.equipo = equipo;
 	}
 
 	public List<Tarea> getTareas() {

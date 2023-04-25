@@ -1,0 +1,24 @@
+<div *ngIf="proyecto == undefined; else card">
+  <mat-spinner></mat-spinner>
+</div>
+  <ng-template #card>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{proyecto.nombre}}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          Fecha de entrega: {{proyecto.fechaEntrega | date:'dd/MMM/YY'}}<br />
+          Porcentaje de penalización: {{proyecto.porcentajePenalizacion}}<br />
+          Descripción: {{proyecto.descripcion}}<br />
+        </p>
+        Archivos: <br />
+        <div *ngIf="proyecto.files != undefined">
+          <mat-chip-row matTooltip="Descargar" *ngFor="let file of proyecto.files.split(',')" (click)="openFile(file)" [editable]="true">
+            {{file}} <mat-icon>cloud_download</mat-icon>
+          </mat-chip-row>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </ng-template>

@@ -1,6 +1,8 @@
 package com.gamificacion.demo.Models;
 
 import java.io.Serializable;
+import java.security.acl.Group;
+
 import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -64,11 +66,24 @@ public class Usuario implements Serializable {
 	@ManyToOne	
 	@JoinColumn(name="id_rol")
 	private Rol rol;
-
-	//bi-directional many-to-one association to UsuarioRecompensa
-	@OneToMany(mappedBy="usuario")
+	
+	@ManyToMany(mappedBy = "alumnos")
+	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)	
+	private List<Grupo> grupos;
+	
+	@OneToMany(mappedBy = "profesor")
 	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	private List<UsuarioRecompensa> usuarioRecompensas;
+	private List<Grupo> grupo_profesor;
+	
+	@OneToMany(mappedBy = "profesor")
+	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
+	private List<Proyecto> proyectos;
+	
+
+	@OneToMany(mappedBy = "profesor")
+	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
+	private List<Recompensa> recompensas;
+	
 
 	public Usuario() {
 	}
@@ -98,6 +113,22 @@ public class Usuario implements Serializable {
 	}
 	
 	
+
+	public List<Grupo> getGrupos() {
+		return grupos;
+	}
+
+	public void setGrupos(List<Grupo> grupos) {
+		this.grupos = grupos;
+	}
+
+	public List<Grupo> getGrupo_profesor() {
+		return grupo_profesor;
+	}
+
+	public void setGrupo_profesor(List<Grupo> grupo_profesor) {
+		this.grupo_profesor = grupo_profesor;
+	}
 
 	public List<Notificacion> getNotificaciones() {
 		return notificaciones;
@@ -148,21 +179,8 @@ public class Usuario implements Serializable {
 		this.rol = rol;
 	}
 
-	public List<UsuarioRecompensa> getUsuarioRecompensas() {
-		return this.usuarioRecompensas;
-	}
 
-	public void setUsuarioRecompensas(List<UsuarioRecompensa> usuarioRecompensas) {
-		this.usuarioRecompensas = usuarioRecompensas;
-	}
 
-	public UsuarioRecompensa addUsuarioRecompensa(UsuarioRecompensa usuarioRecompensa) {
-		getUsuarioRecompensas().add(usuarioRecompensa);
-		usuarioRecompensa.setUsuario(this);
-
-		return usuarioRecompensa;
-	}
-	
 	
 
 	public List<Equipo> getEquipos() {
@@ -173,12 +191,7 @@ public class Usuario implements Serializable {
 		this.equipos = equipos;
 	}
 
-	public UsuarioRecompensa removeUsuarioRecompensa(UsuarioRecompensa usuarioRecompensa) {
-		getUsuarioRecompensas().remove(usuarioRecompensa);
-		usuarioRecompensa.setUsuario(null);
 
-		return usuarioRecompensa;
-	}
 
 	public List<Tarea> getTareas() {
 		return tareas;
@@ -202,6 +215,14 @@ public class Usuario implements Serializable {
 
 	public void setAviable(boolean isAviable) {
 		this.isAvailable = isAviable;
+	}
+
+	public List<Proyecto> getProyectos() {
+		return proyectos;
+	}
+
+	public void setProyectos(List<Proyecto> proyectos) {
+		this.proyectos = proyectos;
 	}
 	
 	

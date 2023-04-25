@@ -1,8 +1,8 @@
 <mat-form-field class="example-full-width">
   <mat-label>Buscar</mat-label>
   <input [(ngModel)]="cadenaBuscar" matInput placeholder="Buscar" value="">
-</mat-form-field>
-<button (click)="buscar()">Buscar</button>
+</mat-form-field><br />
+<button mat-raised-button color="primary" (click)="buscar()"><mat-icon>search</mat-icon>Buscar</button>
 <div *ngIf="showChip">
   <mat-chip-grid #chipGrid aria-label="Busqueda">
     <mat-chip (removed)="deleteBusqueda()">
@@ -41,15 +41,12 @@
       <td mat-cell *matCellDef="let element"> {{element.descripcion}} </td>
     </ng-container>
 
-    <ng-container matColumnDef="puntosRecompensa">
-      <th mat-header-cell *matHeaderCellDef>Puntos recompensa</th>
-      <td mat-cell *matCellDef="let element"> {{element.puntosRecompensa}} </td>
-    </ng-container>
-
     <ng-container matColumnDef="porcentajePenalizacion">
       <th mat-header-cell *matHeaderCellDef>Porcentaje penalización</th>
       <td mat-cell *matCellDef="let element"> {{element.porcentajePenalizacion}} </td>
     </ng-container>
+
+
 
     <ng-container matColumnDef="activo">
       <th mat-header-cell *matHeaderCellDef> Activo </th>
@@ -75,19 +72,19 @@
             <mat-form-field class="example-full-width">
               <mat-label>Nombre</mat-label>
               <input [(ngModel)]="newProyecto.nombre" matInput placeholder="Nombre Proyecto" value="">
-            </mat-form-field>
-            <mat-form-field class="example-full-width">
-              <mat-label>Puntos recompensa</mat-label>
-              <input type="number" [(ngModel)]="newProyecto.puntosRecompensa" matInput placeholder="Ex. 500.00" value="">
-            </mat-form-field>
+            </mat-form-field> <br />
+
             <mat-form-field class="example-full-width">
               <mat-label>Porcentaje penalización</mat-label>
               <input type="number" [(ngModel)]="newProyecto.porcentajePenalizacion" matInput placeholder="0-100" value="">
             </mat-form-field><br />
-            <input type="file" (change)="onFileSelected($event)" name="name" value="" multiple /><br />
+
+            <button type="button" mat-raised-button (click)="fileInput.click()">Subir archivo <mat-icon>attach_file</mat-icon></button>
+            <input hidden type="file" (change)="onFileSelected($event)" #fileInput name="name" value="" multiple /><br />
+            
             Archivos:
-            <div *ngIf="newProyecto.files != undefined">
-              <mat-chip-row *ngFor="let file of newProyecto.files.split(',')" (click)="openFile(file)" (removed)="removeFile(file)" [editable]="true">
+            <div *ngIf="newProyecto.files != undefined && newProyecto.files != ''">
+              <mat-chip-row matTooltip="Descargar" *ngFor="let file of newProyecto.files.split(',')" (click)="openFile(file)" (removed)="removeFile(file)" [editable]="true">
                 {{file}}
                 <button matChipRemove [attr.aria-label]="'remove ' + file">
                   <mat-icon>cancel</mat-icon>
@@ -101,26 +98,15 @@
               <mat-hint>MM/DD/YYYY</mat-hint>
               <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
+            </mat-form-field> <br />
             <mat-form-field class="example-full-width">
               <mat-label>Descripción</mat-label>
               <textarea [(ngModel)]="newProyecto.descripcion" matInput></textarea>
-            </mat-form-field>
-            <mat-form-field class="example-full-width" appearance="fill">
-              <mat-label>Equipo</mat-label>
-              <input (click)="getEquiposDisponibles()" [(ngModel)]="newProyecto.equipo" type="text"
-                     placeholder="Equipo responsable"
-                     aria-label="Number"
-                     matInput
-                     [matAutocomplete]="auto">
-              <mat-autocomplete [displayWith]="optionText" #auto="matAutocomplete">
-                <mat-option *ngFor="let equipo of equipoOptionList" [value]="equipo">
-                  {{equipo.nombre}}
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
-            <mat-slide-toggle [(ngModel)]="newProyecto.isActive">Equipo Activo</mat-slide-toggle>
-            <button (click)="guardar()">Guardar</button>
+            </mat-form-field><br />
+
+              
+            <mat-slide-toggle [(ngModel)]="newProyecto.isActive">Proyecto Activo</mat-slide-toggle><br /><br />
+            <button  mat-raised-button color="primary" (click)="guardar()">Guardar</button>
             <span class="example-element-description-attribution"></span>
           </div>
         </div>

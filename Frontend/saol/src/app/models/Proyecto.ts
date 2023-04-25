@@ -3,6 +3,7 @@ import { FlujoAcumulado } from "./FlujoAcumulado";
 import { HistoriaUsuario } from "./HistoriaUsuario";
 import { Quemado } from "./Quemado";
 import { Tarea } from "./Tarea";
+import { Usuario } from "./Usuario";
 
 export class Proyecto {
   id: number;
@@ -12,15 +13,11 @@ export class Proyecto {
   files: string;
   nombre: string;
   porcentajePenalizacion: number;
-  equipo: Equipo;
-  puntosRecompensa: number;
-  flujoAcumulados: Array<FlujoAcumulado>;
-  historiasUsuarios: Array<HistoriaUsuario>;
-  quemados: Array<Quemado>;
-  tareas: Array<Tarea>;
+  equipos: Array<Equipo>;    
   isActive: boolean;
+  profesor: Usuario;
   
-  constructor(proyecto: any) {    
+  constructor(proyecto: any) {
     this.id = proyecto.id;
     this.descripcion = proyecto.descripcion;
     this.fechaCreacion = proyecto.fechaCreacion;
@@ -28,13 +25,9 @@ export class Proyecto {
     this.files = proyecto.files;
     this.nombre = proyecto.nombre;
     this.porcentajePenalizacion = proyecto.porcentajePenalizacion;
-    this.equipo = proyecto.equipo;
-    this.puntosRecompensa = proyecto.puntosRecompensa;
-    this.flujoAcumulados = proyecto.flujoAcumulados;
-    this.historiasUsuarios = proyecto.historiasUsuarios;
-    this.quemados = proyecto.quemados;
-    this.tareas = proyecto.tareas;
+    this.equipos = proyecto.equipos;  
     this.isActive = proyecto.isActive;
+    this.profesor = proyecto.profesor;
   }  
 
 }

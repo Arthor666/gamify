@@ -3,6 +3,8 @@ package com.gamificacion.demo.Models;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 /**
  * The persistent class for the notificacion database table.
@@ -21,6 +23,7 @@ public class Notificacion implements Serializable {
 	//bi-directional many-to-one association to Usuario
 	@ManyToOne
 	@JoinColumn(name="id_usuario")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Usuario usuario;
 
 	//bi-directional many-to-one association to Recompensa

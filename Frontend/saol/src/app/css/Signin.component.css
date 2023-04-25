@@ -1,0 +1,16 @@
+.container {
+  height: 100%;
+  
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translate(0, -50%);
+  height: 20em;
+  width: 20em;
+  border-radius: 20px;
+}
+

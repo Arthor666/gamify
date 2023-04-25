@@ -82,16 +82,25 @@ public class EquipoRestController {
 		 * 
 		 * */
 		Equipo equipo = objectMapper.convertValue(linkedHashMap,Equipo.class);
-		equipo = equipoRepository.save(equipo);
-		for(Usuario u:equipo.getUsuarios()) {
-			equipoRepository.updateAvalableUser(u.getId());
-		}
+		equipo = equipoRepository.save(equipo);		
 		return equipo;
 	}
 	
 	@PostMapping("/all")
 	public List<Equipo> getAll(@RequestBody LinkedHashMap linkedHashMap){
 		return equipoRepository.findAll();
+	}
+	
+	@PostMapping("/id")
+	public Equipo getById(@RequestBody LinkedHashMap linkedHashMap){
+		int id = (int) linkedHashMap.get("id");
+		return equipoRepository.findById(id).get();
+	}
+	
+	@PostMapping("/grupo")
+	public List<Equipo> getByGrupoId(@RequestBody LinkedHashMap linkedHashMap){
+		int id = (int) linkedHashMap.get("id");
+		return equipoRepository.findByGrupo_id(id);
 	}
 	
 	@PostMapping("/numProyectos")
@@ -105,7 +114,7 @@ public class EquipoRestController {
 	@PostMapping("/poryecto")
 	public Equipo getByProyectoId(@RequestBody LinkedHashMap linkedHasMap){
 		int id = (int) linkedHasMap.get("id");
-		return equipoRepository.findByProyectos_Id(id);
+		return equipoRepository.findByProyecto_Id(id);
 	}
 	
 	@PostMapping("/nombre")

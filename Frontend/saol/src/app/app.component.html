@@ -1,12 +1,38 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <mat-toolbar>
   <mat-toolbar-row>
-    <span>Saol</span>
+    <img width="50" height="50" ngSrc="../assets/escudoESCOM.png"><span>Saol</span>
+
+    <div *ngIf="usuarioId != undefined;else anonymous">
+      <div class="navContent">
+        <button mat-menu-item matTooltip="Volver al menú principal" routerLink="/menu"><mat-icon color="primary">home</mat-icon> <span>Menú principal</span> </button>
+      </div>
+    </div>
+    <ng-template #anonymous>
+      <div class="navContent">
+        <button mat-menu-item matTooltip="Ingresa a tu cuenta" routerLink="/signin"><mat-icon color="primary">input</mat-icon> <span>Ingresa a tu cuenta</span> </button>
+      </div>
+      <div class="navContent">
+        <button mat-menu-item matTooltip="Crea una cuenta" routerLink="/login"><mat-icon color="primary">account_circle</mat-icon> <span>Crea una cuenta</span> </button>
+      </div>
+    </ng-template>
     <span class="example-spacer"></span>
+    <div *ngIf="usuarioId != undefined">
+      <button mat-button [matMenuTriggerFor]="menu"> <mat-icon>menu</mat-icon></button>
+    </div>
+    <mat-menu #menu="matMenu">
+      <button routerLink="/modificar" mat-menu-item>
+        <mat-icon>settings</mat-icon>
+        <span>Configurar cuenta</span>
+      </button>
+      <button (click)="logout()" mat-menu-item>
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
     <div *ngIf="numNotificacion > 0">
-      <div class="notificacion-count"><p class="number-notificacion">{{numNotificacion}}</p> </div> 
-    </div>    
-    <mat-icon class="example-icon" (click)="abrirNotificaciones()">notifications_none</mat-icon>    
+      <div matBadge="{{numNotificacion}}" matBadgeColor="warn"><mat-icon class="example-icon" (click)="abrirNotificaciones()">notifications_none</mat-icon></div>
+    </div>
   </mat-toolbar-row>
 </mat-toolbar>
 <router-outlet>  </router-outlet>

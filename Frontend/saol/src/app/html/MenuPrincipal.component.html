@@ -1,0 +1,99 @@
+<div style="display:flex; margin-top:20px;">
+  <div class="notificacionesRecientesContainer">
+    <mat-list role="list">
+      <div *ngIf="cUser.rol.nombre == 'Alumno'">
+        <div mat-subheader>Últimas notificaciones</div>
+        <ng-template ngFor let-item [ngForOf]="notificacionList" let-i="index">
+          <mat-list-item lines="3" role="listitem">
+            <div *ngIf="item.recompensa != undefined"><span matListItemTitle>¡Felicidades! Alcanzaste la recomoensa</span><h3>{{item.recompensa.nombre}}</h3> </div>
+            <div *ngIf="item.tarea != undefined"><span matListItemTitle>¡Te han etiquetado en una tarea!</span><h3>{{item.tarea.nombre}}</h3></div>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+        </ng-template>
+      </div>      
+    </mat-list>
+  </div>
+  <div class="menuContainer" *ngIf="cUser.rol.nombre == 'Profesor' ;else alumno">
+
+    <div routerLink="/grupoAdmin" class="box">
+      <div class="iconContainer">
+        <mat-icon class="matIcon" color="primary">book</mat-icon>
+      </div>
+      <div style="text-align: center">
+        <hr />
+        <h4>Gestiona tus grupos</h4>
+        Crea grupos nuevos, modifica o elimina los existentes
+      </div>
+    </div>
+
+    <div routerLink="/proyectoAdmin" class="box">
+      <div class="iconContainer">
+        <mat-icon class="matIcon" color="primary">assignment</mat-icon>
+      </div>
+      <div style="text-align: center">
+        <hr />
+        <h4>Gestiona tus proyectos</h4>
+        Crea proyectos nuevos, modifica o elimina los existentes
+      </div>
+    </div>
+
+    <div routerLink="/recompensaAdmin" class="box">
+      <div class="iconContainer">
+        <mat-icon class="matIcon" color="primary">card_giftcard</mat-icon>
+      </div>
+      <div style="text-align: center">
+        <hr />
+        <h4>Gestiona tus recompensas</h4>
+        Crea recompensas nuevas, modifica o elimina los existentes
+      </div>
+    </div>
+
+
+
+
+
+  </div>
+
+  <ng-template #alumno>
+    <div class="menuContainer">
+      <div (click)="openInscribirDialog()" class="box">
+        <div class="iconContainer">
+          <mat-icon class="matIcon" color="primary">add_circle</mat-icon>
+        </div>
+        <div style="text-align: center">
+          <hr />
+          <h4>Ingresa a un nuevo grupo</h4>
+          Ingresa a un nuevo grupo con el código único de acceso.
+        </div>
+      </div>
+      <div routerLink="/grupo" class="box">
+        <div class="iconContainer">
+          <mat-icon class="matIcon" color="primary">class</mat-icon>
+        </div>
+        <div style="text-align: center">
+          <hr />
+          <h4>Consulta los grupos que perteneces</h4>
+        </div>
+      </div>
+      <div routerLink="/equipo" class="box">
+        <div class="iconContainer">
+          <mat-icon class="matIcon" color="primary">search</mat-icon>
+        </div>
+        <div style="text-align: center">
+          <hr />
+          <h4>Consulta los equipos a los que pertences, integrantes y tus calificaciones</h4>
+        </div>
+      </div>
+      <div *ngFor="let equipo of listEquipos" routerLink="/menuEquipo/{{equipo.id}}" class="box">
+        <div class="iconContainer">
+          <mat-icon class="matIcon" color="primary">group</mat-icon>
+        </div>
+        <div style="text-align: center">
+          <hr />
+          <h4>Equipo: {{equipo.nombre}}</h4>
+          Realiza acciones sobre este equipo.
+        </div>
+      </div>
+    </div>     
+  </ng-template>      
+</div>

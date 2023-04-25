@@ -12,6 +12,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { CreateKanbanColumnDialog } from './CreateKanbanColumnDialog.component';
 import { ClasesService } from '../service/Clases.service';
 import { Clases } from '../models/Clases';
+import { ActivatedRoute } from '@angular/router';
+import { globalEnum } from '../globalEnum';
 
 
 
@@ -24,37 +26,46 @@ import { Clases } from '../models/Clases';
 
 export class KanbanComponent implements OnInit {
   
-  proyecto: Proyecto = new Proyecto({ "nombre": 'Cargando...' });
+  proyecto: Proyecto ;
   arrayStatus: Status[] = [];
   arrayStatusId: string[] = ['18', '19', '20'];
-  cUsuario!:Usuario;
+  cUsuario!: Usuario;
+  idEquipo: number;
 
-  constructor(private statusService: StatusService, private tareaService: TareaService, private proyectoService: ProyectoService, private usuarioService: UsuarioService, private dialog: MatDialog, private clasesService: ClasesService) { }
+  constructor(private route: ActivatedRoute, private statusService: StatusService, private tareaService: TareaService, private proyectoService: ProyectoService, private usuarioService: UsuarioService, private dialog: MatDialog, private clasesService: ClasesService) {
+    this.idEquipo = Number(this.route.snapshot.paramMap.get("idEquipo"));
+    this.cUsuario = JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage));
+  }
 
-  public ngOnInit(): void {
-    this.usuarioService.getById(56).subscribe(usuario => {
+  public ngOnInit(): void {    
+    this.usuarioService.getById(this.cUsuario.id).subscribe(usuario => {
       this.cUsuario = usuario;
-      this.proyectoService.getById(5).subscribe(proyecto => {
+      this.proyectoService.getByEquipoId(this.idEquipo).subscribe(proyecto => {
         this.proyecto = proyecto;        
         this.statusService.getByClase("tarea").subscribe(data => {
           this.arrayStatus = data;
-          this.statusService.getByClase(this.proyecto.nombre).subscribe(data2 => {
+          this.statusService.getByEquipoId(this.idEquipo).subscribe(data2 => {
             this.arrayStatus.push(...data2);
+            let temp = this.arrayStatus[this.arrayStatus.length - 1];
+            this.arrayStatus[this.arrayStatus.length - 1] = this.arrayStatus[2];
+            this.arrayStatus[2] = temp;
             this.getTareas();
           });
         });
       });         
-    });    
+    });   
   }
   
   openCreateDialog() {
     const dialogRef = this.dialog.open(CreateKanbanColumnDialog, { data: "" });
     dialogRef.afterClosed().subscribe(result => {
-      this.statusService.save(new Status({ "nombre": result })).subscribe(data => {
-        this.arrayStatus.push(data);
-        const c = new Clases({ "nombre": this.proyecto.nombre, "statuses": [data] });
-        this.clasesService.save(c).subscribe(data => console.log(data));
-      });
+      if (result != undefined) {
+        this.statusService.save(new Status({ "nombre": result, "equipo": { "id": this.idEquipo } })).subscribe(data => {
+            this.arrayStatus.push(data);
+            const c = new Clases({ "nombre": this.proyecto.nombre, "statuses": [data] });
+            this.clasesService.save(c).subscribe(data => console.log(data));
+          });
+        }     
     });
   }
 
@@ -63,14 +74,14 @@ export class KanbanComponent implements OnInit {
   }
 
   getTareas() {
-    var aux:Array<Tarea> = [];
-    this.tareaService.getTareasByUsuarioId(this.cUsuario.id).subscribe(tareByUser =>
+    var aux: Array<Tarea> = [];
+    this.tareaService.getTareasByAutorIdAndEquipoId(this.cUsuario.id, this.idEquipo).subscribe(tareByUser =>
     {
       tareByUser.forEach(x => {
         x.editable = true;        
       });
       this.mergeStatusTarea(tareByUser);
-      this.tareaService.getByProyectoId(this.proyecto.id).subscribe(tareaByProyecto =>
+      this.tareaService.getByEquipoId(this.idEquipo).subscribe(tareaByProyecto =>
         this.mergeStatusTarea(tareaByProyecto)
       );          
     });    

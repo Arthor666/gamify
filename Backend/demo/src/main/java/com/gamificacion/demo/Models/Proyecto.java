@@ -41,39 +41,16 @@ public class Proyecto implements Serializable {
 
 	@Column(name="porcentaje_penalizacion")
 	private int porcentajePenalizacion;
+		
+	@OneToMany(fetch = FetchType.LAZY,mappedBy="proyecto")
+	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)	
+	private List<Equipo> equipos;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	@JoinColumn(name="id_equipo")
-	private Equipo equipo;
-
-	@Column(name="puntos_recompensa")
-	private double puntosRecompensa;
-
-	//bi-directional many-to-one association to FlujoAcumulado
-	@OneToMany(mappedBy="proyecto")
-	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	private List<FlujoAcumulado> flujoAcumulados;
-
-	//bi-directional many-to-one association to HistoriasUsuario
-	@OneToMany(mappedBy="proyecto")
-	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	private List<HistoriasUsuario> historiasUsuarios;
-
-	//bi-directional many-to-one association to Quemado
-	@OneToMany(mappedBy="proyecto")
-	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	private List<Quemado> quemados;
-
-	//bi-directional many-to-one association to Tarea
-	@OneToMany(mappedBy="proyecto")
-	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	private List<Tarea> tareas;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	@JoinColumn(name="id_status")
-	private Status status;
+	@ManyToOne
+	@JoinColumn(name="id_profesor")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private Usuario profesor;
+		
 	
 	@Column(name="is_active")
 	private boolean isActive;
@@ -145,109 +122,25 @@ public class Proyecto implements Serializable {
 		this.porcentajePenalizacion = porcentajePenalizacion;
 	}
 
-	public double getPuntosRecompensa() {
-		return this.puntosRecompensa;
+
+
+	public List<Equipo> getEquipos() {
+		return equipos;
 	}
 
-	public void setPuntosRecompensa(double puntosRecompensa) {
-		this.puntosRecompensa = puntosRecompensa;
+	public void setEquipos(List<Equipo> equipos) {
+		this.equipos = equipos;
 	}
 
-	public List<FlujoAcumulado> getFlujoAcumulados() {
-		return this.flujoAcumulados;
+	public Usuario getProfesor() {
+		return profesor;
 	}
 
-	public void setFlujoAcumulados(List<FlujoAcumulado> flujoAcumulados) {
-		this.flujoAcumulados = flujoAcumulados;
+	public void setProfesor(Usuario profesor) {
+		this.profesor = profesor;
 	}
-
-	public FlujoAcumulado addFlujoAcumulado(FlujoAcumulado flujoAcumulado) {
-		getFlujoAcumulados().add(flujoAcumulado);
-		flujoAcumulado.setProyecto(this);
-
-		return flujoAcumulado;
-	}
-
-	public FlujoAcumulado removeFlujoAcumulado(FlujoAcumulado flujoAcumulado) {
-		getFlujoAcumulados().remove(flujoAcumulado);
-		flujoAcumulado.setProyecto(null);
-
-		return flujoAcumulado;
-	}
-
-	public List<HistoriasUsuario> getHistoriasUsuarios() {
-		return this.historiasUsuarios;
-	}
-
-	public void setHistoriasUsuarios(List<HistoriasUsuario> historiasUsuarios) {
-		this.historiasUsuarios = historiasUsuarios;
-	}
-
-	public HistoriasUsuario addHistoriasUsuario(HistoriasUsuario historiasUsuario) {
-		getHistoriasUsuarios().add(historiasUsuario);
-		historiasUsuario.setProyecto(this);
-
-		return historiasUsuario;
-	}
-
-	public HistoriasUsuario removeHistoriasUsuario(HistoriasUsuario historiasUsuario) {
-		getHistoriasUsuarios().remove(historiasUsuario);
-		historiasUsuario.setProyecto(null);
-
-		return historiasUsuario;
-	}
-
-	public List<Quemado> getQuemados() {
-		return this.quemados;
-	}
-
-	public void setQuemados(List<Quemado> quemados) {
-		this.quemados = quemados;
-	}
-
-	public Quemado addQuemado(Quemado quemado) {
-		getQuemados().add(quemado);
-		quemado.setProyecto(this);
-
-		return quemado;
-	}
-
-	public Quemado removeQuemado(Quemado quemado) {
-		getQuemados().remove(quemado);
-		quemado.setProyecto(null);
-
-		return quemado;
-	}
-
-	public List<Tarea> getTareas() {
-		return this.tareas;
-	}
-
-	public void setTareas(List<Tarea> tareas) {
-		this.tareas = tareas;
-	}
-
-	public Tarea addTarea(Tarea tarea) {
-		getTareas().add(tarea);
-		tarea.setProyecto(this);
-
-		return tarea;
-	}
-
-	public Tarea removeTarea(Tarea tarea) {
-		getTareas().remove(tarea);
-		tarea.setProyecto(null);
-
-		return tarea;
-	}
-
-	public Equipo getEquipo() {
-		return equipo;
-	}
-
-	public void setEquipo(Equipo equipo) {
-		this.equipo = equipo;
-	}
+	
+	
 	
 	
 

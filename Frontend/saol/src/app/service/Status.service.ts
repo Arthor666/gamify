@@ -28,6 +28,10 @@ export class StatusService {
     return this.http.post<Status>(globalEnum.url + "status/status", recompensa).pipe(catchError(this.handleError));
   }
 
+  getByEquipoId(id: number): Observable<Status[]> {
+    return this.http.post<Status[]>(globalEnum.url + "status/equipo", {id: id}).pipe(catchError(this.handleError));
+  }
+
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {
       // A client-side or network error occurred. Handle it accordingly.

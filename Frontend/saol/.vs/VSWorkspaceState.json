@@ -1,8 +1,11 @@
 {
   "ExpandedNodes": [
     "",
-    "\\src\\app"
+    "\\src",
+    "\\src\\app",
+    "\\src\\app\\service",
+    "\\src\\assets"
   ],
-  "SelectedNode": "\\tsconfig.json",
+  "SelectedNode": "\\src\\app\\service\\Usuario.service.ts",
   "PreviewInSolutionExplorer": false
 }
