@@ -16,9 +16,10 @@ public interface IEquipoRepository extends JpaRepository<Equipo, Integer>{
 	Page<Equipo> findAllByOrderByIdDesc(Pageable pagable);
 	List<Equipo> findByUsuarios_Id(int id);
 	List<Equipo> findByNombreContains(String nombre);
-	Equipo findByProyectos_Id(int id);
+	Equipo findByProyecto_Id(int id);
 	@Procedure("update_available_user")
 	void updateAvalableUser(int id);
 	@Query(nativeQuery = true,value = "SELECT count(*) FROM proyecto WHERE id_equipo = ?1 AND id_status != (SELECT id FROM status WHERE nombre='Finalizado');")
-	long countProyectosNoFinalizados(int id);	
+	long countProyectosNoFinalizados(int id);
+	List<Equipo> findByGrupo_id(int id);	
 }

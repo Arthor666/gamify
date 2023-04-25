@@ -1,20 +1,21 @@
+import { Equipo } from "./Equipo";
+import { Usuario } from "./Usuario";
 import { UsuarioRecompensa } from "./UsuarioRecompensa";
 
 export class Recompensa {
   id: number;
   descripcion:string;
   nombre: string;
-  puntos: number;
-  files: string;
-  usuarioRecompensas: Array<UsuarioRecompensa>;
+  equipos: Array<Equipo>;
+  isEditable: boolean;
+  profesor: Usuario;
 
   constructor(recompensa:any) {
     this.id = recompensa.id;
     this.descripcion = recompensa.descripcion;
-    this.nombre = recompensa.nombre;
-    this.puntos = recompensa.puntos;
-    this.files = recompensa.files;
-    this.usuarioRecompensas = recompensa.usuarioRecompensas;
+    this.nombre = recompensa.nombre;    
+    this.equipos = recompensa.equipos;
+    this.profesor = recompensa.profesor;
   }
 
 

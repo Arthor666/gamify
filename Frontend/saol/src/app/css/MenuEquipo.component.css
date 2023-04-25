@@ -1,0 +1,38 @@
+.notificacionesRecientesContainer {
+  height: 80vh;
+  width: 20vw;
+}
+
+.menuContainer {
+  height: 80vh;
+  width: 70vw;
+  flex-wrap: wrap;
+  display: flex;
+  padding-left: 100px;
+}
+
+.box {
+  height: auto;
+  min-height: 25vh;
+  max-height: 50vh;
+  width: 17vw;
+  margin-left: 1vw;
+  border-radius: 30px;
+  border: 1px solid;
+  border-color: gray;
+  box-shadow: 5px 5px 5px 5px #F1F1F1;
+  flex-wrap: wrap;
+  word-wrap: break-word;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+.iconContainer {
+  text-align: center;
+}
+
+.matIcon {
+  height: 50px;
+  width: 50px;
+  font-size: 50px;
+}

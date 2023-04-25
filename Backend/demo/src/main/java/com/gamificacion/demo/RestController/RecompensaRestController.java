@@ -46,9 +46,27 @@ public class RecompensaRestController {
 		 
 	 }
 	 
-	 @PostMapping("/all")
-	 private List<Recompensa> getAll(@RequestBody LinkedHashMap linkedHashMap){		
-		 return recompensaRepository.findAll();
+	 @PostMapping("/profesor/commons")
+	 private List<Recompensa>getCommonsAndProfesorId(@RequestBody LinkedHashMap linkedHashMap){
+		 int id = (int)linkedHashMap.get("id");
+		 List<Recompensa> c = recompensaRepository.findByProfesorIsNull();
+		 List<Recompensa> p = recompensaRepository.findByProfesor_Id(id);
+		 p.addAll(c);
+		 return p;
+	 }
+	 
+	 
+	 
+	 @PostMapping("/profesor")
+	 private List<Recompensa>getByProfesorId(@RequestBody LinkedHashMap linkedHashMap){
+		 int id = (int)linkedHashMap.get("id");		 
+		 return recompensaRepository.findByProfesor_Id(id);	
+	 }
+	 
+	 
+	 @PostMapping("/commons")
+	 private List<Recompensa> getCommons(@RequestBody LinkedHashMap linkedHashMap){		
+		 return recompensaRepository.findByProfesorIsNull();
 	 }
 	 @PostMapping("/nombre")
 	 private List<Recompensa> getByNombreLike(@RequestBody LinkedHashMap linkedHashMap){
@@ -57,7 +75,13 @@ public class RecompensaRestController {
 	 }	 
 	 @PostMapping("/user/{id}")
 	 private List<Recompensa> getRecompensasByUser(@PathVariable int id,@RequestBody LinkedHashMap linkedHashMap){		 
-		 return recompensaRepository.findByUsuarioRecompensas_Usuario_Id(id);
+		 return null;
+	 }
+	 
+	 @PostMapping("/equipo")
+	 private Recompensa getByUsuarioId(@RequestBody LinkedHashMap linkedHashMap) {
+		 int id = (int) linkedHashMap.get("id");
+		 return recompensaRepository.findByEquipos_Id(id);
 	 }
 	 
 }

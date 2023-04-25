@@ -5,6 +5,8 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.sql.Timestamp;
 
 
@@ -27,15 +29,17 @@ public class FlujoAcumulado implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name="id_status")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Status status;
 
 	@Column(name="num_tareas")
 	private int numTareas;
 
 	//bi-directional many-to-one association to Proyecto
-	@ManyToOne
-	@JoinColumn(name="id_proyecto")
-	private Proyecto proyecto;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="id_equipo")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private Equipo equipo;
 
 	
 	
@@ -82,12 +86,16 @@ public class FlujoAcumulado implements Serializable {
 		this.numTareas = numTareas;
 	}
 
-	public Proyecto getProyecto() {
-		return this.proyecto;
+
+	public Equipo getEquipo() {
+		return equipo;
 	}
 
-	public void setProyecto(Proyecto proyecto) {
-		this.proyecto = proyecto;
+
+	public void setEquipo(Equipo equipo) {
+		this.equipo = equipo;
 	}
+
+	
 
 }

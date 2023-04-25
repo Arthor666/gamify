@@ -1,0 +1,72 @@
+<div style="display:flex; margin-top:20px;">
+  <div class="notificacionesRecientesContainer">
+    
+  </div>
+  <div class="menuContainer">
+    <div (click)="openDialogProyecto()" class="box">
+      <div class="iconContainer">
+        <mat-icon class="matIcon" color="primary">assignment</mat-icon>
+      </div>
+      <div style="text-align: center">
+        <hr />
+        <h4>Proyecto</h4>
+        Consulta los detalles del proyecto
+      </div>
+    </div>
+    <div routerLink="/tarea/{{idEquipo}}" class="box">
+      <div class="iconContainer">
+        <mat-icon class="matIcon" color="primary"> list_alt</mat-icon>
+      </div>
+      <div style="text-align: center">
+        <hr />
+        <h4>Mis tareas</h4>
+        Crea y consulta tareas.
+      </div>
+    </div>
+
+    <div routerLink="/historia/{{idEquipo}}" class="box">
+      <div class="iconContainer">
+        <mat-icon class="matIcon" color="primary">collections_bookmark</mat-icon>
+      </div>
+      <div style="text-align: center">
+        <hr />
+        <h4>Historias de usuario</h4>
+        Crea y modifica las historias de usuario.
+      </div>
+    </div>
+
+    <div routerLink="/kanban/{{idEquipo}}" class="box">
+      <div class="iconContainer">
+        <mat-icon class="matIcon" color="primary">table_chart</mat-icon>
+      </div>
+      <div style="text-align: center">
+        <hr />
+        <h4>Kanban</h4>
+        Interactúa con el tablero kanban.
+      </div>
+    </div>
+
+    <div (click)="openDialogFlujo()" class="box">
+      <div class="iconContainer">
+        <mat-icon class="matIcon" color="primary">show_chart</mat-icon>
+      </div>
+      <div style="text-align: center">
+        <hr />
+        <h4>Flujo acumulado</h4>
+        Visualiza el gráfico de flujo acumulado de tu equipo.
+      </div>
+    </div>
+
+    <div (click)="openDialogQuemado()" class="box">
+      <div class="iconContainer">
+        <mat-icon class="matIcon" style="transform: rotate(90deg)" color="primary">show_chart</mat-icon>
+      </div>
+      <div style="text-align: center">
+        <hr />
+        <h4>Diagrama de quemado</h4>
+        Visualiza el diagrama de quemado de tu equipo.
+      </div>
+    </div>
+
+  </div>
+</div>

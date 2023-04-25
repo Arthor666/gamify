@@ -1,0 +1,96 @@
+<mat-form-field class="example-full-width">
+  <mat-label>Buscar</mat-label>
+  <input [(ngModel)]="cadenaBuscar" matInput placeholder="Buscar" value="">
+</mat-form-field>
+<br />
+<button mat-raised-button color="primary" (click)="buscar()"><mat-icon>search</mat-icon>Buscar</button>
+<div *ngIf="showChip">
+  <mat-chip-grid #chipGrid aria-label="Busqueda">
+    <mat-chip (removed)="deleteBusqueda()">
+      {{cadenaBuscar}}
+      <button matChipRemove [attr.aria-label]="'remove '">
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip>
+  </mat-chip-grid>
+</div>
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="historiaPage" multiTemplateDataRows>
+
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> Id </th>
+      <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef> Nombre </th>
+      <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+    </ng-container>    
+
+    <ng-container matColumnDef="descripcion">
+      <th mat-header-cell *matHeaderCellDef>Descripcion</th>
+      <td mat-cell *matCellDef="let element"> {{element.descripcion}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="puntosHistoria">
+      <th mat-header-cell *matHeaderCellDef>Puntos de historia</th>
+      <td mat-cell *matCellDef="let element"> {{element.puntosHistoria}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let element"> <div *ngIf="element.status != undefined"> {{element.status.nombre}} </div></td>
+    </ng-container>
+
+
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+        <div class="example-element-detail"
+             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+          <div class="example-element-description">
+            <input type="hidden" [(ngModel)]="newHistoria.id" />
+
+            <mat-form-field class="example-full-width">
+              <mat-label>Nombre</mat-label>
+              <input [(ngModel)]="newHistoria.nombre" matInput placeholder="Nombre Tarea" value="">
+            </mat-form-field><br />
+
+            <mat-form-field class="example-full-width">
+              <mat-label>Puntos historia</mat-label>
+              <input [(ngModel)]="newHistoria.puntosHistoria" matInput placeholder="Ex. 500" value="">
+            </mat-form-field><br />
+
+            
+            <mat-form-field appearance="fill">
+              <mat-label>Status</mat-label>
+              <mat-select [compareWith]="compareStatus" [(value)]="newHistoria.status">
+                <mat-option *ngFor="let status of statusList" [value]="status">
+                  {{status.nombre}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field><br />
+            
+            <mat-form-field class="example-full-width">
+              <mat-label>Descripción</mat-label>
+              <textarea [(ngModel)]="newHistoria.descripcion" matInput></textarea>
+            </mat-form-field><br />
+            <button mat-raised-button color="primary" (click)="guardar()">Guardar</button>
+            <span class="example-element-description-attribution"></span>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedColumns;"
+        class="example-element-row"
+        [class.example-expanded-row]="expandedElement === element"
+        (click)="expandir(element)">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                 showFirstLastButtons
+                 aria-label="Select page of periodic elements">
+  </mat-paginator>
+</div>

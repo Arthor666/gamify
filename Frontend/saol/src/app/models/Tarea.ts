@@ -1,3 +1,4 @@
+import { Equipo } from "./Equipo";
 import { HistoriaUsuario } from "./HistoriaUsuario";
 import { Proyecto } from "./Proyecto";
 import { Status } from "./Status";
@@ -12,7 +13,7 @@ export class Tarea {
   autor: Usuario;
   etiquetados: Array<Usuario>;
   status: Status;
-  proyecto: Proyecto;
+  equipo: Equipo;
   historiasUsuario: HistoriaUsuario;
   nombre: string;
   editable: boolean = false;
@@ -26,7 +27,7 @@ export class Tarea {
     this.autor = tarea.autor;
     this.etiquetados = tarea.etiquetados;
     this.status = tarea.status;
-    this.proyecto = tarea.proyecto;
+    this.equipo = tarea.equipo;
     this.historiasUsuario = tarea.historiasUsuario;
     this.nombre = tarea.nombre;
   }

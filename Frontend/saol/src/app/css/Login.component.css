@@ -1,0 +1,13 @@
+.container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  position: absolute !important;
+  top:55% !important;
+  transform: translate(0, -50%);  
+  width: 25em;
+  border-radius: 20px;
+}

@@ -41,26 +41,15 @@ public class Status implements Serializable {
 	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
 	private List<Tarea> tareas;
 	
-	@OneToMany(mappedBy="status")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="id_equipo")
 	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
-	private List<Proyecto> proyectos;
+	private Equipo equipo;
+	
+	
 	
 	public Status() {
 	}
-
-	
-	
-	public List<Proyecto> getProyectos() {
-		return proyectos;
-	}
-
-
-
-	public void setProyectos(List<Proyecto> proyectos) {
-		this.proyectos = proyectos;
-	}
-
-
 
 	public int getId() {
 		return this.id;
@@ -80,6 +69,16 @@ public class Status implements Serializable {
 
 	public String getNombre() {
 		return this.nombre;
+	}
+	
+	
+
+	public Equipo getEquipo() {
+		return equipo;
+	}
+
+	public void setEquipo(Equipo equipo) {
+		this.equipo = equipo;
 	}
 
 	public void setNombre(String nombre) {

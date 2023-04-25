@@ -1,0 +1,65 @@
+<div class="container">
+  <div>
+    Nombre: <br />
+    <mat-form-field appearance="fill">
+      <mat-label>Nombre</mat-label>
+      <input [(ngModel)]="nombre" matInput>
+    </mat-form-field>
+
+
+
+    <mat-form-field appearance="fill">
+      <mat-label>Primer apellido</mat-label>
+      <input [(ngModel)]="pApellido" matInput>
+    </mat-form-field>
+
+
+
+    <mat-form-field appearance="fill">
+      <mat-label>Segundo apellido</mat-label>
+      <input [(ngModel)]="sApellido" matInput>
+    </mat-form-field>
+
+  </div>
+  <div>
+    Correo y nombre de usuario: <br />
+    <mat-form-field appearance="fill">
+      <mat-label>Correo</mat-label>
+      <input [(ngModel)]="cUser.correo" matInput>
+    </mat-form-field>
+
+
+
+    <mat-form-field appearance="fill">
+      <mat-label>Nombre usuario</mat-label>
+      <input [(ngModel)]="cUser.nombreUsuario" matInput>
+    </mat-form-field>
+  </div>
+
+  <div>
+    Confirma tu contraseña: <br />
+    <mat-form-field appearance="fill">
+      <mat-label>Contraseña actual</mat-label>
+      <input type="password" [(ngModel)]="cPassword" matInput>
+    </mat-form-field>    
+  </div>
+  <div>
+    Nueva contraseña <br />
+    <mat-form-field matTooltip="Si no deseas cambiar tu contraseña, déjalo en blanco" appearance="fill">
+      <mat-label>Contraseña nueva</mat-label>
+      <input type="password" [(ngModel)]="nPassword" matInput>
+    </mat-form-field>
+
+  </div>
+
+  <div>
+    <mat-radio-group aria-label="Selecciona una opción" [(ngModel)]="cUser.rol">
+      <mat-radio-button *ngFor="let rol of rolList"  [value]="rol" checked="{{cUser.rol.id === rol.id}}">Soy {{rol.nombre}}</mat-radio-button>
+    </mat-radio-group>
+
+  </div>
+  
+
+  <button mat-raised-button (click)="guardar()" color="primary" cdkFocusInitial>Guardar</button>
+
+</div>

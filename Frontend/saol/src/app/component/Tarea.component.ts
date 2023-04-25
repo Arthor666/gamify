@@ -17,6 +17,10 @@ import { UsuarioService } from '../service/Usuario.service';
 import { EquipoService } from '../service/Equipo.service';
 import { Proyecto } from '../models/Proyecto';
 import { ProyectoService } from '../service/Proyecto.service';
+import { ActivatedRoute } from '@angular/router';
+import { globalEnum } from '../globalEnum';
+import { HistoriaUsuarioService } from '../service/HistoriaUsuario.service';
+import { HistoriaUsuario } from '../models/HistoriaUsuario';
 
 
 
@@ -34,7 +38,7 @@ import { ProyectoService } from '../service/Proyecto.service';
 })
 export class TareaComponent implements OnInit {
   minDate: Date;
-  newTarea: any;
+  newTarea: Tarea;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   displayedColumns: string[] = ['id', 'nombre','proyecto' ,'descripcion', 'fechaCreacion','fechaTentativa','autor','status'];
   tareaPage!: MatTableDataSource<Tarea>;
@@ -43,25 +47,33 @@ export class TareaComponent implements OnInit {
   expandedElement: Tarea | null | undefined;
   files: Array<File>;
   cadenaBuscar: string = "";
-  showChip: boolean = false;
-  usuarioOptionList: Array<Usuario> = [];
+  showChip: boolean = false;  
   statusList: Array<Status> = [];
   blob!: Blob;
-  proyectosOptionList!: Array<Proyecto>;
-  usuarioId: number = 57;
+  proyecto: Proyecto;
+  usuarioId: number;
+  equipoId: number = -1;
+  usuariosSelectList: Array<Usuario>;
+  historiasUsuarios: Array<HistoriaUsuario>;
 
-  constructor(private usuarioService: UsuarioService, private tareaService: TareaService, private statusService: StatusService, private fileService: FileService, private _snackBar: MatSnackBar, private proyectoService: ProyectoService) {
+  constructor(private historiaService: HistoriaUsuarioService, private snackBar: MatSnackBar, private route: ActivatedRoute, private usuarioService: UsuarioService, private tareaService: TareaService, private statusService: StatusService, private fileService: FileService, private _snackBar: MatSnackBar, private proyectoService: ProyectoService) {
     this.minDate = new Date();
-    this.newTarea = {};
+    this.newTarea = new Tarea({});
     this.files = [];
-    //this.usuarioRecompensaPage = new MatTableDataSource<Tarea>([new Tarea({ "nombre": "Crear recompensa" })]);
+    this.equipoId = Number(this.route.snapshot.paramMap.get("idEquipo"));
     this.tareaPage = new MatTableDataSource<Tarea>([new Tarea({ "nombre": "Crear tarea" })]);
+    this.usuarioId = Number(JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)).id);
   }
 
 
   ngOnInit() {
-    this.tareaService.getTareasByUsuarioId(this.usuarioId).subscribe(data => this.iniciarPaginacion(data));
-    this.proyectoService.getByUsuarioId(this.usuarioId).subscribe(data => this.proyectosOptionList =data);
+    this.tareaService.getTareasByAutorIdAndEquipoId(this.usuarioId, this.equipoId).subscribe(data => this.iniciarPaginacion(data));
+    this.statusService.getByClase("tarea").subscribe(data => this.statusList = data);
+    this.proyectoService.getByEquipoId(this.equipoId).subscribe(data => {
+      this.proyecto = data;
+      this.statusService.getByClase(this.proyecto.nombre).subscribe(data => this.statusList.push(...data));
+    });
+    this.usuarioService.getUserByEquipoId(this.equipoId).subscribe(data => this.usuariosSelectList = data.filter((x, i) => { return x.id != this.usuarioId }));
   }
 
   openFile(file: string) {
@@ -75,6 +87,7 @@ export class TareaComponent implements OnInit {
 
     });
   }
+
 
 
   removeFile(file: string) {    
@@ -95,51 +108,54 @@ export class TareaComponent implements OnInit {
     this.tareaPage.paginator = this.paginator;
   }
 
-  expandir(element: any): void {
-    if (element.autor != undefined && element.autor.id != this.usuarioId) {
-      return 
-    }
-    this.newTarea = element;  
-    this.expandedElement = this.expandedElement === element ? null : element;
-    if (this.statusList.length <= 0) {
-      this.statusService.getByClase("tarea").subscribe(data => this.statusList = data);
-    }
-    if (this.newTarea.proyecto != undefined) {
-      this.usuarioService.getUserByProyectoId(this.newTarea.proyecto.id).subscribe(data => {
-        this.newTarea.proyecto.equipo = new Equipo({ "usuarios": [] });
-        data.forEach(x => { if (x.id != this.usuarioId) { this.newTarea.proyecto.equipo.usuarios.push(x) } });
-      });
-    } else {
-      this.newTarea.proyecto = new Proyecto({ "id": 0 });
-    }
-    if (this.newTarea.id != undefined) {
-      this.usuarioService.getUserByEtiquetado(this.newTarea.id).subscribe(data => this.newTarea.etiquetados = data);
-    } else {
-      this.newTarea.autor = new Usuario({ "id": this.usuarioId });
-      this.newTarea.etiquetados = [];
-      this.newTarea.status = new Status({});
-    }
+  compareFunction(o1: any, o2: any) {    
+    return o1 && o2 ? o1.id === o2.id : o1 === o2;
   }
 
-  updateEtiquetados() {    
-    this.usuarioService.getUserByProyectoId(this.newTarea.proyecto.id).subscribe(data => {
-      this.newTarea.proyecto.equipo = new Equipo({ "usuarios": [] });
-      data.forEach(x => { if (x.id != this.usuarioId) { this.newTarea.proyecto.equipo.usuarios.push(x) } });
+  expandir(element: any): void {    
+    this.newTarea = element;  
+    this.expandedElement = this.expandedElement === element ? null : element;
+    if (this.historiasUsuarios == undefined) {
+      this.historiaService.getByEquipoId(this.equipoId).subscribe(data => this.historiasUsuarios = data);
+    }
+    if (this.newTarea.id != undefined  ) {
+      this.historiaService.getByTareaId(this.newTarea.id).subscribe(data => this.newTarea.historiasUsuario = data);
+      if (this.newTarea.etiquetados == undefined) {
+        this.usuarioService.getUserByEtiquetado(this.newTarea.id).subscribe(data =>
+          this.newTarea.etiquetados = data
+        );
+      }      
+    }
+
+  }
+
+  updateEtiquetados() {
+    this.usuarioService.getUserByEquipoId(this.newTarea.equipo.id).subscribe(data => {
+      this.newTarea.equipo = new Equipo({ id: this.equipoId, "usuarios": [] });
+      data.forEach(x => { if (x.id != this.usuarioId) { this.newTarea.equipo.usuarios.push(x) } });
     });
   }
 
 
   onFileSelected(event: any) {
-    let size: number = 0;
-    let aux = (file: any) => {
-      if (file instanceof File) { return file.size; } return 0;
-    };
-    Array.from(event.target.files).forEach(file => size += aux(file));
+    let size: number = 0;    
+    Array.from(event.target.files).forEach(file => {
+      if (file instanceof File) {
+        size += file.size;
+      }
+    });
     if (size > 1048576) {
       this._snackBar.open("Archivos muy pesados", "Cerrar");
       return
     }
-    this.files = event.target.files;    
+    this.files = event.target.files;
+    const fnames: string[] = [];
+    Array.from(this.files).forEach(file => fnames.push(file.name));
+    if (this.newTarea.files != undefined) {
+      this.newTarea.files += "," + fnames.join();
+    } else {
+      this.newTarea.files = fnames.join();
+    }
   }
 
 
@@ -150,7 +166,10 @@ export class TareaComponent implements OnInit {
   }
 
   buscar() {
-    this.tareaService.getByNombreLike(this.cadenaBuscar).subscribe(data => { this.copyTareaPage = this.tareaPage; this.tareaPage = new MatTableDataSource<Tarea>(data) });
+    this.tareaService.getByNombreLike(this.cadenaBuscar).subscribe(data => { 
+      this.copyTareaPage = this.tareaPage;
+      this.tareaPage = new MatTableDataSource<Tarea>(data)
+    });
     this.showChip = true;
   }
 
@@ -162,20 +181,24 @@ export class TareaComponent implements OnInit {
   }
 
   guardar() {
+    if (this.newTarea.id == undefined) {
+      this.newTarea.status = new Status({ "id": this.statusList.filter((x, i) => { return x.nombre == "Por hacer" })[0].id });
+    }
+    this.newTarea.autor = new Usuario({ "id": this.usuarioId });
+    this.newTarea.equipo = new  Equipo({ "id": this.equipoId });
     const e = new Tarea(this.newTarea);
-    if (this.files.length > 0) {
-      const fnames: string[] = [];
-      Array.from(this.files).forEach(file => fnames.push(file.name));
-      if (e.files != "") {
-        e.files += "," + fnames.join();
-      } else {
-        e.files += fnames.join();
-      }
+    if (this.files.length > 0) {      
       const formData = new FormData();
       Array.from(this.files).forEach(file => formData.append("files", file));
       this.fileService.save(formData).subscribe(data => console.log(data));
     }    
-    this.tareaService.save(e).subscribe(data => this.tareaPage.data.push(data));
+    this.tareaService.save(e).subscribe(data => {
+      if (this.newTarea.id == undefined) {
+        this.tareaPage.data.push(data);        
+        this.tareaPage.paginator = this.paginator;        
+      }
+      this.snackBar.open("Tarea guardada", "Ok");
+    });
   }
 
   optionText(op: Equipo) {

@@ -1,3 +1,4 @@
+import { Equipo } from "./Equipo";
 import { Proyecto } from "./Proyecto";
 import { Status } from "./Status";
 import { Tarea } from "./Tarea";
@@ -8,7 +9,7 @@ export class HistoriaUsuario {
   status: Status;
   nombre: string;
   puntosHistoria: number;
-  proyecto: Proyecto;
+  equipo: Equipo;
   tareas: Array<Tarea>;
 
   constructor(historiaUsuario: any) {
@@ -17,7 +18,7 @@ export class HistoriaUsuario {
     this.status = historiaUsuario.status;
     this.nombre = historiaUsuario.nombre;
     this.puntosHistoria = historiaUsuario.puntosHistoria;
-    this.proyecto = historiaUsuario.proyecto;
+    this.equipo = historiaUsuario.equipo;
     this.tareas = historiaUsuario.tareas;
   }
 

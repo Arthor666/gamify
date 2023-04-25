@@ -13,6 +13,8 @@ import { FileService } from '../service/File.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Recompensa } from '../models/Recompensa';
 import { RecompensaService } from '../service/Recompensa.service';
+import { globalEnum } from '../globalEnum';
+import { Usuario } from '../models/Usuario';
 
 
 @Component({
@@ -29,48 +31,43 @@ import { RecompensaService } from '../service/Recompensa.service';
 })
 export class RecompensaAdminComponent implements OnInit {
   minDate: Date;
-  newRecompensa: any;
+  newRecompensa: Recompensa;
   displayedColumns: string[] = ['id', 'nombre', 'descripcion', 'puntos'];
   recompensaPage!: MatTableDataSource<Recompensa>;
   copyRecompensaPage!: MatTableDataSource<Recompensa>;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  expandedElement: Recompensa | null | undefined;
-  files: Array<File>;
+  expandedElement: Recompensa | null | undefined;  
   cadenaBuscar: string = "";
   showChip: boolean = false;
   blob!: Blob;
+  profesorId: number;
 
-  constructor(private recompensaService: RecompensaService, private fileService: FileService, private _snackBar: MatSnackBar) {
+  constructor(private snackBar: MatSnackBar,private recompensaService: RecompensaService, private _snackBar: MatSnackBar) {
     this.minDate = new Date();
-    this.newRecompensa = {};
-    this.files = [];
-    this.recompensaPage = new MatTableDataSource<Recompensa>([new Recompensa({ "nombre": "Crear recompensa" })]);
+    this.newRecompensa = new Recompensa({});
+    this.recompensaPage = new MatTableDataSource<Recompensa>([new Recompensa({ "nombre": "Crear recompensa", "isEditable": true })]);
+    this.profesorId = Number(JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)).id);
   }
 
 
   ngOnInit() {
-    this.recompensaService.getAll().subscribe(data => this.iniciarPaginacion(data));
-
-  }
-
-  openFile(file: string) {
-    this.fileService.getFile(file).subscribe(data => {
-      this.blob = new Blob([data], { type: 'application/pdf' });
-      var downloadURL = window.URL.createObjectURL(data);
-      var link = document.createElement('a');
-      link.href = downloadURL;
-      link.download = file;
-      link.click();
-
+    this.recompensaService.getCommons().subscribe(data => {
+      data.forEach(x => x.isEditable = false);
+      this.iniciarPaginacion(data);
     });
+    this.recompensaService.getByProfesorId(this.profesorId).subscribe(data => {
+      if (data != undefined && data.length != -1) {
+        data.forEach(x => x.isEditable = true);
+        this.recompensaPage.data.push(...data);
+        this.recompensaPage.paginator = this.paginator;
+      }       
+    });
+
   }
 
+  
 
-  removeFile(file: string) {
-    let aux = this.newRecompensa.files.split(",")
-    aux.splice(aux.indexOf(file), 1);
-    this.newRecompensa.files = aux.join();
-  }
+
 
 
   iniciarPaginacion(data: Recompensa[]): void {
@@ -79,24 +76,10 @@ export class RecompensaAdminComponent implements OnInit {
   }
 
   expandir(element: any): void {
-    this.newRecompensa = element;
-    this.expandedElement = this.expandedElement === element ? null : element;    
-  }
-
-
-
-  onFileSelected(event: any) {
-    let size: number = 0;
-    let aux = (file: any) => {
-      if (file instanceof File) { return file.size; } return 0;
-    };
-    Array.from(event.target.files).forEach(file => size += aux(file));
-    if (size > 1048576) {
-      this._snackBar.open("Archivos muy pesados", "Cerrar");
-      return
-    }
-    this.files = event.target.files;
-    console.log(this.files);
+    if (element.isEditable || element.isEditable == undefined) {
+      this.newRecompensa = element;
+      this.expandedElement = this.expandedElement === element ? null : element;    
+    }    
   }
 
 
@@ -112,16 +95,17 @@ export class RecompensaAdminComponent implements OnInit {
   }
 
   guardar() {
+    this.newRecompensa.profesor = JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)) as Usuario;
     const e = new Recompensa(this.newRecompensa);
-    const fnames: string[] = [];
-    Array.from(this.files).forEach(file => fnames.push(file.name));
-    e.files = fnames.join();
-    console.log()
-    this.recompensaService.save(e).subscribe(data => this.recompensaPage.data.push(data));
+    const fnames: string[] = [];        
+    this.recompensaService.save(e).subscribe(data => {
+      if (this.newRecompensa.id == undefined) {
+        this.recompensaPage.data.push(data);
+        this.recompensaPage.paginator = this.paginator;
+        this.snackBar.open("Recompensa guardada","Ok");
+      }      
+    });
     const formData = new FormData();
-    Array.from(this.files).forEach(file => formData.append("files", file));
-    this.fileService.save(formData).subscribe(data => console.log(data));
-
   }
 
   optionText(op: Equipo) {

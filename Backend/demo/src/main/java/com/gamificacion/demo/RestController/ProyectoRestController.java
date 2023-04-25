@@ -32,7 +32,7 @@ public class ProyectoRestController {
 	private IProyectoRepository proyectoRepository;
 	
 	@Autowired	
-	ObjectMapper objectMapper;	
+	private ObjectMapper objectMapper;	
 	
 	
 	
@@ -47,6 +47,18 @@ public class ProyectoRestController {
 		int id = (int) linkedHashMap.get("id");
 		return proyectoRepository.findById(id);
 	}
+	
+	@PostMapping("/profesor")
+	public List<Proyecto> getByProfesorId(@RequestBody LinkedHashMap linkedHashMap){
+		int id = (int) linkedHashMap.get("id");
+		return proyectoRepository.findByProfesor_Id(id);
+	}
+	
+	@PostMapping("/equipo")
+	public Proyecto getByEquipoId(@RequestBody LinkedHashMap linkedHashMap) {
+		int id = (int) linkedHashMap.get("id");
+		return proyectoRepository.findByEquipos_Id(id);
+	}
 
 	@PostMapping("/proyecto")
 	public Proyecto saveProyecto(@RequestBody LinkedHashMap linkedHashMap) {
@@ -54,11 +66,6 @@ public class ProyectoRestController {
 		return proyectoRepository.save(p);
 	}
 	
-	@PostMapping("/equipo")
-	public List<Proyecto> getByProyecto(@RequestBody LinkedHashMap linkedHashMap) {		
-		Equipo e = objectMapper.convertValue(linkedHashMap, Equipo.class);
-		return proyectoRepository.findByEquipo_Id(e.getId());
-	}
 	
 	@PostMapping("/all")
 	public List<Proyecto> getAll(@RequestBody LinkedHashMap linkedHashMap){
@@ -70,13 +77,7 @@ public class ProyectoRestController {
 		String nombre = (String)linkedHashMap.get("nombre");
 		return proyectoRepository.findByNombreContains(nombre);
 	}
-	
-	@PostMapping("/user")
-	public List<Proyecto> getByUsuarioId(@RequestBody LinkedHashMap linkedHashMap){
-		int id =(int)linkedHashMap.get("id");
-		return proyectoRepository.findByEquipo_Usuarios_Id(id);
-	}
-	
+		
 	@PostMapping("/proyectoAdmin")
 	public Page<Proyecto> getEquipoAdmin(@RequestBody LinkedHashMap linkedHashMap){
 		int page = 0;

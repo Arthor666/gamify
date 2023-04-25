@@ -16,8 +16,8 @@ export class TareaService {
 
   }
 
-  getByProyectoId(id: number) : Observable<Tarea[]>{
-    return this.http.post<Tarea[]>(globalEnum.url + "tarea/proyecto", { "id": id }).pipe(catchError(this.handleError));
+  getByEquipoId(id: number) : Observable<Tarea[]>{
+    return this.http.post<Tarea[]>(globalEnum.url + "tarea/equipo", { "id": id }).pipe(catchError(this.handleError));
   }
 
   getTareasByUsuarioId(id: number): Observable<Tarea[]> {
@@ -30,6 +30,10 @@ export class TareaService {
 
   getByNombreLike(nombre: string): Observable<Tarea[]> {
     return this.http.post<Tarea[]>(globalEnum.url + "tarea/nombre", { "nombre": nombre }).pipe(catchError(this.handleError));
+  }
+
+  getTareasByAutorIdAndEquipoId(idUsuario: number, idEquipo: number): Observable<Tarea[]> {
+    return this.http.post<Tarea[]>(globalEnum.url + "tarea/autor/equipo", { "idUsuario": idUsuario, "idEquipo": idEquipo }).pipe(catchError(this.handleError));
   }
 
   save(recompensa: Tarea): Observable<Tarea> {

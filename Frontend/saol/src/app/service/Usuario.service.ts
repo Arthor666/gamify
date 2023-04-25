@@ -15,6 +15,10 @@ export class UsuarioService {
 
   }
 
+  getUserByNameAndGrupoIdAndNotInEquipo(name: string, id: number): Observable<Usuario[]> {
+    return this.http.post<Usuario[]>(globalEnum.url + "user/name/grupo", {"name":name,"id":id}).pipe(catchError(this.handleError));
+  }
+
   getAll(): Observable<Usuario[]> {
     return this.http.post<Usuario[]>(globalEnum.url + "user/all", {}).pipe(catchError(this.handleError));
   }
@@ -37,6 +41,10 @@ export class UsuarioService {
     return this.http.post<Usuario>(globalEnum.url + "user/user", usuario).pipe(catchError(this.handleError));
   }
 
+  update(usuario: Usuario, newPassword: string, currentPassword: string): Observable<Usuario> {
+    return this.http.put<Usuario>(globalEnum.url + "user/usuario", { usuario: usuario, newPassword: newPassword, currentPassword: currentPassword }).pipe(catchError(this.handleError));
+  }
+
   getUserByEtiquetado(id: number): Observable<Usuario[]> {
     return this.http.post<Usuario[]>(globalEnum.url + "user/etiquetado", { "id": id }).pipe(catchError(this.handleError));
   }
@@ -48,7 +56,7 @@ export class UsuarioService {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong.
       console.error(
-        `Backend returned code ${error.status}, body was: `, error.error);
+        `Backend returned code ${error.status}, body was: `, error.error);      
     }
     // Return an observable with a user-facing error message.
     return throwError(() => new Error('Something bad happened; please try again later.'));

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { DialogNotificacionComponent } from './component/DialogNotificaciones.component';
+import { globalEnum } from './globalEnum';
+import { Usuario } from './models/Usuario';
 import { NotificacionService } from './service/Notificacion.service';
 
 @Component({
@@ -11,14 +14,27 @@ import { NotificacionService } from './service/Notificacion.service';
 export class AppComponent implements OnInit {
   title = 'saol';
   numNotificacion: number = 0;
-  usuarioId: number = 67;
+  usuarioId: number;
 
-  constructor(private notificacionesService: NotificacionService, private dialog: MatDialog) {
-
+  constructor(private router: Router, private notificacionesService: NotificacionService, private dialog: MatDialog) {
+    let cUsuario = JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)) as Usuario;
+    if (cUsuario!= undefined) {
+      this.usuarioId = Number(cUsuario.id);
+    }    
   }
 
   ngOnInit() {
-    this.notificacionesService.countByUsuarioId(this.usuarioId).subscribe(data => this.numNotificacion = data.count);
+    if (this.usuarioId != undefined) {
+      this.notificacionesService.countByUsuarioId(this.usuarioId).subscribe(data => this.numNotificacion = data.count);
+    }    
+  }
+
+  logout() {
+    localStorage.removeItem(globalEnum.usuarioLocalStorage);
+    this.router.navigate(['/signin'])
+      .then(() => {
+        window.location.reload();
+      });  
   }
 
   abrirNotificaciones() {

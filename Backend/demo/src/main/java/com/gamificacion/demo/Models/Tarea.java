@@ -1,6 +1,5 @@
 package com.gamificacion.demo.Models;
 
-import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
 import javax.persistence.*;
@@ -58,9 +57,10 @@ public class Tarea implements Serializable {
 		
 
 	//bi-directional many-to-one association to Proyecto
-	@ManyToOne
-	@JoinColumn(name="id_proyecto")	
-	private Proyecto proyecto;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="id_equipo")
+	@JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
+	private Equipo equipo;
 
 	//bi-directional many-to-one association to HistoriasUsuario
 	@ManyToOne
@@ -142,13 +142,19 @@ public class Tarea implements Serializable {
 		this.status = status;
 	}
 
-	public Proyecto getProyecto() {
-		return this.proyecto;
+	
+
+	public Equipo getEquipo() {
+		return equipo;
 	}
 
-	public void setProyecto(Proyecto proyecto) {
-		this.proyecto = proyecto;
+
+
+	public void setEquipo(Equipo equipo) {
+		this.equipo = equipo;
 	}
+
+
 
 	public HistoriasUsuario getHistoriasUsuario() {
 		return this.historiasUsuario;

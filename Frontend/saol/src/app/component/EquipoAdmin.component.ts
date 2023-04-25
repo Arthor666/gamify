@@ -10,6 +10,17 @@ import { Equipo } from '../models/Equipo';
 import { EquipoService } from '../service/Equipo.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { globalEnum } from '../globalEnum';
+import { ActivatedRoute } from '@angular/router';
+import { Proyecto } from '../models/Proyecto';
+import { Grupo } from '../models/Grupo';
+import { ProyectoService } from '../service/Proyecto.service';
+import { RecompensaService } from '../service/Recompensa.service';
+import { Recompensa } from '../models/Recompensa';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogFlujoAcumuladoComponent } from './DialogFlujoAcumulado.component';
+import { DialogDiagramaQuemadoComponent } from './DialogDiagramaQuemado.component';
 
 
 @Component({
@@ -34,18 +45,24 @@ export class EquipoAdminComponent implements OnInit {
   separatorKeysCodes: number[] = [ENTER, COMMA];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   expandedElement: Equipo | null | undefined;
-  newEquipo: any;
-  displayedColumns: string[] = ['id', 'nombre', 'fechaCreacion', 'activo'];
+  newEquipo: Equipo;
+  displayedColumns: string[] = ['id', 'nombre', 'fechaCreacion', 'calificacion','flujoAcumulado','diagramaQuemado'];
   cadenaBuscar: string = "";
   showChip: boolean = false;
   copyEquipoPage!: MatTableDataSource<Equipo>;
+  profesorId: number;
+  grupoId: number;
+  proyectos: Array<Proyecto>;
+  recompensas: Array<Recompensa>
 
-  constructor(private usuarioService: UsuarioService, private equipoService: EquipoService) {
+  constructor(private dialog: MatDialog, private snackBar: MatSnackBar, private recompensaService: RecompensaService, private proyectoService: ProyectoService, private route: ActivatedRoute, private usuarioService: UsuarioService, private equipoService: EquipoService) {
     this.equipoPage = new MatTableDataSource<Equipo>([new Equipo({ "nombre": "crear" })]);
-    this.newEquipo = {};
+    this.newEquipo = new Equipo({});
+    this.profesorId = Number(JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)).id);
+    this.grupoId = Number(this.route.snapshot.paramMap.get("idGrupo"));
   }
   ngOnInit(): void {
-    this.equipoService.getAll().subscribe(data => this.iniciarPaginacion(data));
+    this.equipoService.getByGrupoId(this.grupoId).subscribe(data => this.iniciarPaginacion(data));
   }
 
   iniciarPaginacion(data: Equipo[]): void {
@@ -56,17 +73,37 @@ export class EquipoAdminComponent implements OnInit {
   expandir(element: any): void {
     this.newEquipo = element;    
     this.expandedElement = this.expandedElement === element ? null : element;
+    this.proyectoService.getByProfesorId(this.profesorId).subscribe(data => this.proyectos = data);    
     if (this.newEquipo.id != null) {
-      this.equipoService.getCountProyectos(this.newEquipo.id).subscribe(count => {
-        this.newEquipo.numeroProyectos = count.count;
-        this.usuarioService.getUserByEquipoId(this.newEquipo.id).subscribe(data => this.newEquipo.usuarios = data);
-      });      
+      this.usuarioService.getUserByEquipoId(this.newEquipo.id).subscribe(data => this.newEquipo.usuarios = data);
+      this.recompensaService.getCommonsAndProfesorId(this.profesorId).subscribe(data => this.recompensas = data);
+      this.recompensaService.getByEquipoId(this.newEquipo.id).subscribe(data => this.newEquipo.recompensa = data);
+      this.proyectoService.getByEquipoId(this.newEquipo.id).subscribe(data => this.newEquipo.proyecto = data);
     }    
+  }
+
+  abrirFlujoAcumulado(element: Equipo) {
+    const dialogRef = this.dialog.open(DialogFlujoAcumuladoComponent, {
+      data: element
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
+
+  abrirDiagramaQuemado(element: Equipo) {
+    const dialogRef = this.dialog.open(DialogDiagramaQuemadoComponent, {
+      data: element
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
+
   }
 
   getUsuariosOptions(event:any) {
     const name = event.target.value;
-    this.usuarioService.getUserByNameAndAvailable(name).subscribe(data => this.usuarioOptionList = data);    
+    this.usuarioService.getUserByNameAndGrupoIdAndNotInEquipo(name, this.grupoId).subscribe(data => this.usuarioOptionList = data);    
   }
   remove(usuario: Usuario) {
     const index = this.newEquipo.usuarios.findIndex((x: Usuario) => x.id == usuario.id);    
@@ -75,12 +112,11 @@ export class EquipoAdminComponent implements OnInit {
     }    
   }
 
-  guardar() {
-    this.equipoService.saveEquipo(this.newEquipo).subscribe(data => console.log(data));
-
-  }
 
   selected(event: MatAutocompleteSelectedEvent) {
+    if (this.newEquipo.usuarios == undefined) {
+      this.newEquipo.usuarios = [];
+    }
     const exist = this.newEquipo.usuarios.indexOf(event.option.value);
     if (exist == -1) {
       this.newEquipo.usuarios.push(event.option.value);
@@ -97,16 +133,23 @@ export class EquipoAdminComponent implements OnInit {
     this.showChip = false;
   }
 
+  compareFunction(e1: any, e2: any) {
+      return e1 && e2 ? e1.id === e2.id : e1 === e2;
+    
+  }
 
-  onSubmit(): void {
-    const aux: any = {};
-    aux.nombre = this.usuarioFormCtl.controls['nombreUsuarioCtl'].value;
-    aux.id = null;
-    aux.fechaCreacion = null;
-    aux.isActive = 1;
-    aux.usuarios = this.usuarioSelectedList;
-    aux.proyectos = null;
-    const equipo: Equipo = new Equipo(aux);
-    this.equipoService.saveEquipo(equipo).subscribe(data => console.log(data));
+  guardar(): void {
+    this.newEquipo.grupo = new Grupo({ "id": this.grupoId });
+    if (this.newEquipo.id == undefined) {      
+      this.newEquipo.isActive = true;
+      this.newEquipo.calificacion = -1;
+    }       
+    this.equipoService.saveEquipo(this.newEquipo).subscribe(data => {
+      if (this.newEquipo.id == undefined) {
+        this.equipoPage.data.push(data);
+        this.equipoPage.paginator = this.paginator;        
+      }
+      this.snackBar.open("Equipo guardado", "Ok");
+    });
     }
 }

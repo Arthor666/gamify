@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Inscribirse a grupo</h1>
+<div mat-dialog-content>
+  <p>Ingresa el código único de acceso</p>
+  <mat-form-field appearance="fill">
+    <mat-label>Código Acceso</mat-label>
+    <input matInput [(ngModel)]="codigoAcceso">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>  
+  <button mat-raised-button   color="primary" (click)="inscribir()" cdkFocusInitial>Inscribir</button>
+</div>

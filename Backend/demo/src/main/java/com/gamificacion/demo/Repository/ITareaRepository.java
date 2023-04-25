@@ -22,7 +22,7 @@ public interface ITareaRepository extends JpaRepository<Tarea, Integer>{
 
 	List<Tarea>  findByEtiquetados_Id(int id);
 
-	List<Tarea> findByProyecto_Id(int id);
+	List<Tarea> findByEquipo_Id(int id);
 	
 	@Procedure("etiquetados_notificaciones")
 	void crearnotificionEtiquetado(int idTarea,int idUsuario);
@@ -30,7 +30,15 @@ public interface ITareaRepository extends JpaRepository<Tarea, Integer>{
 	@Modifying
 	@Transactional
 	@Query( nativeQuery = true ,value = "UPDATE tarea SET id_status = :sid WHERE id = :tid")
-	void updateStatus(@Param("sid")int statusId,@Param("tid") int TareaId);
+	void updateStatus(@Param("sid")int statusId,@Param("tid") int tareaId);
+
+	
+
+	List<Tarea> findByNombreContains(String nombre);
+
+	List<Tarea> findByAutor_IdAndEquipo_IdOrderByFechaTentativaAsc(int idUsuario, int idEquipo);
+
+	
 	
 	
 	

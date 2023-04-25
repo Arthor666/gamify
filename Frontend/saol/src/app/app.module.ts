@@ -35,6 +35,40 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { DialogNotificacionComponent } from './component/DialogNotificaciones.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RecompensaComponent } from './component/Recompensa.component';
+import * as echarts from 'echarts';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { DialogFlujoAcumuladoComponent } from './component/DialogFlujoAcumulado.component';
+import { MatButtonModule } from '@angular/material/button';
+import { DatePipe } from '@angular/common';
+import { ProyectoComponent } from './component/Proyecto.component';
+import { GrupoAdminComponent } from './component/GrupoAdmin.component';
+import { GrupoComponent } from './component/Grupo.component';
+import { DialogInscribirGrupoComponent } from './component/DialogInscribirGrupo.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SigninComponent } from './component/Signin.component';
+import { MatCardModule } from '@angular/material/card';
+import { LoginComponent } from './component/Login.component';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MenuPrincipalComponent } from './component/MenuPrincipal.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MenuEquipoComponent } from './component/MenuEquipo.component';
+import { DialogProyectoComponent } from './component/DialogProyecto.component';
+import { HistoriasUsuarioComponent } from './component/HistoriasUsuario.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { DialogDiagramaQuemadoComponent } from './component/DialogDiagramaQuemado.component';
+import { NgOptimizedImage } from '@angular/common';
+import { ModifyUserComponent } from './component/ModifyUser.component';
+
+
+
+
+
+
+
+
 //import { NavBarComponent } from './component/NavBar.component';
 
 
@@ -56,7 +90,20 @@ import { RecompensaComponent } from './component/Recompensa.component';
     UsuarioComponent,
     EquipoComponent,
     DialogNotificacionComponent,
-    RecompensaComponent
+    RecompensaComponent,
+    DialogFlujoAcumuladoComponent,
+    ProyectoComponent,
+    GrupoAdminComponent,
+    GrupoComponent,
+    DialogInscribirGrupoComponent,
+    SigninComponent,
+    LoginComponent,
+    MenuPrincipalComponent,
+    MenuEquipoComponent,
+    DialogProyectoComponent,
+    HistoriasUsuarioComponent,
+    DialogDiagramaQuemadoComponent,
+    ModifyUserComponent
   ],
   imports: [
     BrowserModule,
@@ -80,25 +127,25 @@ import { RecompensaComponent } from './component/Recompensa.component';
     DragDropModule,
     MatDialogModule,
     MatToolbarModule,
-    MatTooltipModule 
+    MatTooltipModule,
+    NgxEchartsModule.forRoot({
+      echarts
+    }),
+    MatButtonModule,
+    MatProgressSpinnerModule,
+    MatCardModule,
+    MatRadioModule,
+    MatGridListModule,
+    MatBadgeModule,
+    MatDividerModule,
+    MatListModule,
+    MatMenuModule,
+    NgOptimizedImage 
   ],
   exports:[
-    MatInputModule,
-    MatAutocompleteModule,
-    MatChipsModule,
-    MatIconModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatExpansionModule,
-    MatSnackBarModule,
-    MatSlideToggleModule,
-    MatSelectModule,
-    MatToolbarModule,
-    MatTooltipModule 
+       
     ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

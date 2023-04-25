@@ -14,8 +14,12 @@ export class ProyectoService {
 
   }
 
-  getByUsuarioId(id: number): Observable<Proyecto[]> {
-    return this.http.post<Proyecto[]>(globalEnum.url + "proyecto/user" , {"id":id}).pipe(catchError(this.handleError));
+  getByProfesorId(id: number): Observable<Proyecto[]> {
+    return this.http.post<Proyecto[]>(globalEnum.url + "proyecto/profesor", { "id": id }).pipe(catchError(this.handleError));
+  }
+
+  getByEquipoId(id: number): Observable<Proyecto> {
+    return this.http.post<Proyecto>(globalEnum.url + "proyecto/equipo", { "id": id }).pipe(catchError(this.handleError));
   }
 
   getById(id: number): Observable<Proyecto> {
@@ -23,15 +27,15 @@ export class ProyectoService {
   }
 
   getByNombreLike(nombre: string): Observable<Proyecto[]> {
-    return this.http.post<Proyecto[]>(globalEnum.url + "proyecto/nombre", { "nombre": nombre }).pipe(catchError(this.handleError));
+    return this.http.post<Proyecto[]>(globalEnum.url + "equipo/nombre", { "nombre": nombre }).pipe(catchError(this.handleError));
   }
 
   getAll(): Observable<Proyecto[]> {
-    return this.http.post<Proyecto[]>(globalEnum.url + "proyecto/all", {} ).pipe(catchError(this.handleError));
+    return this.http.post<Proyecto[]>(globalEnum.url + "equipo/all", {} ).pipe(catchError(this.handleError));
   }
 
   getPageProyecto(page: number, size: number): Observable<Page<Proyecto>> {
-    return this.http.post<Page<Proyecto>>(globalEnum.url + "proyecto/proyectoAdmin", { "page": page, "size": size }).pipe(catchError(this.handleError));
+    return this.http.post<Page<Proyecto>>(globalEnum.url + "equipo/proyectoAdmin", { "page": page, "size": size }).pipe(catchError(this.handleError));
   }
 
   save(proyecto: Proyecto): Observable<Proyecto> {

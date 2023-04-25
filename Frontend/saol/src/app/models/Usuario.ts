@@ -19,6 +19,7 @@ export class Usuario {
   rol: Rol | undefined;
   usuarioRecompensas: Array<UsuarioRecompensa>;
   notificaciones: Array<Notificacion>;
+  token: string
 
   constructor(usuario: any) {
     this.id = usuario.id;
@@ -34,5 +35,6 @@ export class Usuario {
     this.rol = usuario.rol;
     this.usuarioRecompensas = usuario.usuarioRecompensas;
     this.notificaciones = usuario.notificaciones;
+    this.token = usuario.token;
   }
 }
