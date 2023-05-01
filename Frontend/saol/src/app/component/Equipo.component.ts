@@ -12,7 +12,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { RecompensaService } from '../service/Recompensa.service';
 import { globalEnum } from '../globalEnum';
-
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'equipo-admin',
@@ -42,14 +42,17 @@ export class EquipoComponent implements OnInit {
   showChip: boolean = false;
   copyEquipoPage!: MatTableDataSource<Equipo>;
   usuarioId: number;
+  token: string;
 
   constructor(private usuarioService: UsuarioService, private equipoService: EquipoService, private recompensaService: RecompensaService) {
     this.equipoPage = new MatTableDataSource<Equipo>();
     this.newEquipo = {};
-    this.usuarioId = Number(JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)).id);
+    this.usuarioId = Number(JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))).id);
+    this.token = JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))).token;
+
   }
   ngOnInit(): void {
-    this.equipoService.getByUsuarioId(this.usuarioId).subscribe(data => this.iniciarPaginacion(data));
+    this.equipoService.getByUsuarioId(this.usuarioId, this.token).subscribe(data => this.iniciarPaginacion(data));
   }
 
   iniciarPaginacion(data: Equipo[]): void {

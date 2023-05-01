@@ -21,7 +21,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogFlujoAcumuladoComponent } from './DialogFlujoAcumulado.component';
 import { DialogDiagramaQuemadoComponent } from './DialogDiagramaQuemado.component';
-
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'equipo-admin',
@@ -58,8 +58,8 @@ export class EquipoAdminComponent implements OnInit {
   constructor(private dialog: MatDialog, private snackBar: MatSnackBar, private recompensaService: RecompensaService, private proyectoService: ProyectoService, private route: ActivatedRoute, private usuarioService: UsuarioService, private equipoService: EquipoService) {
     this.equipoPage = new MatTableDataSource<Equipo>([new Equipo({ "nombre": "crear" })]);
     this.newEquipo = new Equipo({});
-    this.profesorId = Number(JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)).id);
-    this.grupoId = Number(this.route.snapshot.paramMap.get("idGrupo"));
+    this.profesorId = Number(JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))).id);
+    this.grupoId = Number(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(this.route.snapshot.paramMap.get("idGrupo").replace("*","/"), globalEnum.secret)));
   }
   ngOnInit(): void {
     this.equipoService.getByGrupoId(this.grupoId).subscribe(data => this.iniciarPaginacion(data));

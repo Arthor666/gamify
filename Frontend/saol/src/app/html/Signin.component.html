@@ -12,6 +12,9 @@
         <mat-label>Contraseña</mat-label>
         <input type="password" [(ngModel)]="authObject.password" matInput>
       </mat-form-field>
+      <div style="color:red" *ngIf="error">
+        *Olvidaste la contraseña ? Recupera tu cuenta <button mat-raised-button color="warn" (click)="openDialogRecuperar()">aquí</button> 
+      </div><br />
 
       <button mat-raised-button (click)="ingresar()" color="primary" cdkFocusInitial>Ingresar</button>
     </mat-card-content><br />

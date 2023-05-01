@@ -10,7 +10,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { globalEnum } from "../globalEnum";
 import { MatSnackBar } from "@angular/material/snack-bar";
-
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'equipo-admin',
@@ -41,13 +41,16 @@ export class GrupoAdminComponent implements OnInit{
   constructor(private snackBar: MatSnackBar, private usuarioService: UsuarioService, private grupoService: GrupoService) {
     this.grupoPage = new MatTableDataSource<Grupo>([new Grupo({ "nombre": "crear" })]);
     this.newGrupo = {};
-    this.profesorId = Number(JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)).id);
+    this.profesorId = Number(JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))).id);
   }
   ngOnInit(): void {
     this.grupoService.getByProfesorId(this.profesorId).subscribe(data => this.iniciarPaginacion(data));
   }
 
   iniciarPaginacion(data: Grupo[]): void {
+    data.forEach(x => {
+      x.encryptedId = CryptoJS.AES.encrypt(x.id + "", globalEnum.secret).toString().replace("/","*");
+    });
     this.grupoPage.data.push(...data);
     this.grupoPage.paginator = this.paginator;
   }

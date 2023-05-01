@@ -9,7 +9,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { ProyectoAdminComponent } from './component/ProyectoAdmin.component';
@@ -61,6 +61,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { DialogDiagramaQuemadoComponent } from './component/DialogDiagramaQuemado.component';
 import { NgOptimizedImage } from '@angular/common';
 import { ModifyUserComponent } from './component/ModifyUser.component';
+import { DialogRecuperarCuentaComponent } from './component/DialogRecuperarCuenta.component';
+import { TokenInterceptor } from './service/TokenInterceptor.service';
 
 
 
@@ -103,7 +105,8 @@ import { ModifyUserComponent } from './component/ModifyUser.component';
     DialogProyectoComponent,
     HistoriasUsuarioComponent,
     DialogDiagramaQuemadoComponent,
-    ModifyUserComponent
+    ModifyUserComponent,
+    DialogRecuperarCuentaComponent
   ],
   imports: [
     BrowserModule,
@@ -144,8 +147,8 @@ import { ModifyUserComponent } from './component/ModifyUser.component';
   ],
   exports:[
        
-    ],
-  providers: [DatePipe],
+  ],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor,multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

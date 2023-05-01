@@ -10,6 +10,7 @@ import { DialogDiagramaQuemadoComponent } from "./DialogDiagramaQuemado.componen
 import { DialogFlujoAcumuladoComponent } from "./DialogFlujoAcumulado.component";
 import { DialogInscribirGrupoComponent } from "./DialogInscribirGrupo.component";
 import { DialogProyectoComponent } from "./DialogProyecto.component";
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   templateUrl:"../html/MenuEquipo.component.html",
@@ -20,12 +21,16 @@ export class MenuEquipoComponent implements OnInit {
   cUser: Usuario;
   idEquipo: number;
   equipo: Equipo;
+  idEquipoCiphred: string;
+  token: string
   constructor(private route: ActivatedRoute, private dialog: MatDialog, private snackBar: MatSnackBar, private equipoService: EquipoService) {
-    this.cUser = JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)) as Usuario;
-    this.idEquipo = Number(this.route.snapshot.paramMap.get("idEquipo"));
+    this.cUser = JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))) as Usuario;
+    this.idEquipoCiphred = this.route.snapshot.paramMap.get("idEquipo");
+    this.idEquipo = Number(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(this.idEquipoCiphred.replace("*", "/"), globalEnum.secret)));
+    this.token = JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))).token;
   }
   ngOnInit(): void {
-    this.equipoService.getByUsuarioId(this.cUser.id).subscribe(data => this.listEquipos = data);
+    this.equipoService.getByUsuarioId(this.cUser.id, this.token).subscribe(data => this.listEquipos = data);
     this.equipoService.getById(this.idEquipo).subscribe(data => this.equipo = data);
   }
 

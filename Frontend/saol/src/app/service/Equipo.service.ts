@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
@@ -13,6 +13,8 @@ export class EquipoService {
 
   }
 
+ 
+
   saveEquipo(equipo: Equipo): Observable<Equipo>{
     return this.http.post<Equipo>(globalEnum.url + "equipo/equipo", equipo).pipe(catchError(this.handleError));
   }
@@ -25,8 +27,12 @@ export class EquipoService {
     return this.http.post<Equipo>(globalEnum.url + "equipo/numProyectos", {"id":id}).pipe(catchError(this.handleError));
   }
 
-  getByUsuarioId(id: number): Observable<Equipo[]> {
-    return this.http.post<Equipo[]>(globalEnum.url + "equipo/user", {"id":id}).pipe(catchError(this.handleError));
+  getByUsuarioId(id: number, token: string): Observable<Equipo[]> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer `+token
+    });
+    return this.http.post<Equipo[]>(globalEnum.url + "equipo/user", { "id": id }).pipe(catchError(this.handleError));
   }
 
   getByNombreLike(nombre: string): Observable<Equipo[]> {

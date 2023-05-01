@@ -3,6 +3,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { globalEnum } from "../globalEnum";
 import { Grupo } from "../models/Grupo";
 import { GrupoService } from "../service/Grupo.service";
+import * as CryptoJS from 'crypto-js';
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   templateUrl: '../html/DialogInscribirGrupo.component.html',
@@ -16,8 +18,8 @@ export class DialogInscribirGrupoComponent implements OnInit {
 
   }
 
-  constructor(public dialogRef: MatDialogRef<DialogInscribirGrupoComponent>, @Inject(MAT_DIALOG_DATA) public data: any, private grupoService: GrupoService) {
-    this.alumnoId = Number(JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)).id);
+  constructor(private snackBar: MatSnackBar, public dialogRef: MatDialogRef<DialogInscribirGrupoComponent>, @Inject(MAT_DIALOG_DATA) public data: any, private grupoService: GrupoService) {
+    this.alumnoId = Number(JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))).id);
   }
 
   onNoClick(): void {
@@ -25,6 +27,6 @@ export class DialogInscribirGrupoComponent implements OnInit {
   }
 
   inscribir() {
-    this.grupoService.inscribirAlumno(this.alumnoId, this.codigoAcceso).subscribe(data => this.dialogRef.close(data));
+    this.grupoService.inscribirAlumno(this.alumnoId, this.codigoAcceso).subscribe(data => this.snackBar.open("Alumno inscrito"));
   }
 }

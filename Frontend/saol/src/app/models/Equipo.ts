@@ -22,6 +22,7 @@ export class Equipo {
   quemados: Array<Quemado>;
   tareas: Array<Tarea>;
   recompensa: Recompensa;
+  encryptedId: string;
 
 
   constructor(equipo: any) {

@@ -16,7 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogFlujoAcumuladoComponent } from './DialogFlujoAcumulado.component';
 import { globalEnum } from '../globalEnum';
 import { Usuario } from '../models/Usuario';
-
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'equipo-admin',
@@ -50,7 +50,7 @@ export class ProyectoAdminComponent implements OnInit {
     this.newProyecto = {};
     this.files = [];
     this.proyectoPage = new MatTableDataSource<Proyecto>([new Proyecto({ "nombre": "crear equipo" })]);
-    this.profesorId = Number(JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)).id);
+    this.profesorId = Number(JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))).id);
   }
  
 
@@ -141,7 +141,7 @@ export class ProyectoAdminComponent implements OnInit {
   }
 
   guardar() {
-    this.newProyecto.profesor = JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)) as Usuario;
+    this.newProyecto.profesor = JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))) as Usuario;
     const e = new Proyecto(this.newProyecto);
     if (this.files.length > 0) {
       

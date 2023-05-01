@@ -48,8 +48,8 @@ public class JwtFilter extends OncePerRequestFilter{
 			throws ServletException, IOException {
 		final String autHeader = request.getHeader("Authorization");
 		final String userEmail;
-		final String jwToken;
-		
+		final String jwToken;		
+		request.getHeaderNames();
 		if(autHeader == null || !autHeader.startsWith("Bearer")) {
 			filterChain.doFilter(request, response);
 			return;
@@ -60,8 +60,8 @@ public class JwtFilter extends OncePerRequestFilter{
 			Usuario u = userRepository.findByCorreo(userEmail);
 			UserDetails usuario = new User(u.getCorreo(), u.getPassword(),Collections.singleton(new SimpleGrantedAuthority(u.getRol().getNombre())) ); 
 			if(jwtUtils.isTokenValid(jwToken, usuario)) {
-				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(usuario,usuario.getPassword());
-				SecurityContextHolder.getContext().setAuthentication(authToken);
+				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(usuario,usuario.getPassword(),usuario.getAuthorities());
+				SecurityContextHolder.getContext().setAuthentication(authToken);				
 			}
 		}
 		filterChain.doFilter(request, response);

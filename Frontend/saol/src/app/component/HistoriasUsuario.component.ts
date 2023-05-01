@@ -10,6 +10,8 @@ import { HistoriaUsuario } from '../models/HistoriaUsuario';
 import { Status } from '../models/Status';
 import { HistoriaUsuarioService } from '../service/HistoriaUsuario.service';
 import { StatusService } from '../service/Status.service';
+import * as CryptoJS from 'crypto-js';
+import { globalEnum } from '../globalEnum';
 
 @Component({
   selector: 'recompensa-admin',
@@ -38,7 +40,7 @@ export class HistoriasUsuarioComponent implements OnInit {
   constructor(private snackBar: MatSnackBar, private route: ActivatedRoute, private historiaService: HistoriaUsuarioService, private statusService: StatusService) {
     this.newHistoria = new HistoriaUsuario({});
     this.historiaPage = new MatTableDataSource<HistoriaUsuario>([new HistoriaUsuario({ "nombre": "Crear historia" })]);
-    this.idEquipo = Number(this.route.snapshot.paramMap.get("idEquipo"));
+    this.idEquipo = Number(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(this.route.snapshot.paramMap.get("idEquipo").replace("*", "/"), globalEnum.secret)));
   }
 
   buscar() {

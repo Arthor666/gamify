@@ -3,9 +3,8 @@
     "",
     "\\src",
     "\\src\\app",
-    "\\src\\app\\service",
-    "\\src\\assets"
+    "\\src\\app\\service"
   ],
-  "SelectedNode": "\\src\\app\\service\\Usuario.service.ts",
+  "SelectedNode": "\\src\\app\\service\\Notificacion.service.ts",
   "PreviewInSolutionExplorer": false
 }
