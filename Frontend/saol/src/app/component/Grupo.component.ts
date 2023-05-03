@@ -11,7 +11,7 @@ import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogInscribirGrupoComponent } from "./DialogInscribirGrupo.component";
 import { globalEnum } from "../globalEnum";
-
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'equipo-admin',
@@ -42,7 +42,7 @@ export class GrupoComponent implements OnInit {
   constructor(private usuarioService: UsuarioService, private grupoService: GrupoService, private dialog: MatDialog) {
     this.grupoPage = new MatTableDataSource<Grupo>();
     this.newGrupo = {};
-    this.alumnoId = Number(JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)).id);
+    this.alumnoId = Number(JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))).id);
   }
   ngOnInit(): void {
     this.grupoService.getByAlumnoId(this.alumnoId).subscribe(data => this.iniciarPaginacion(data));

@@ -84,7 +84,7 @@
           <h4>Consulta los equipos a los que pertences, integrantes y tus calificaciones</h4>
         </div>
       </div>
-      <div *ngFor="let equipo of listEquipos" routerLink="/menuEquipo/{{equipo.id}}" class="box">
+      <div *ngFor="let equipo of listEquipos" routerLink="/menuEquipo/{{equipo.encryptedId}}" class="box">
         <div class="iconContainer">
           <mat-icon class="matIcon" color="primary">group</mat-icon>
         </div>

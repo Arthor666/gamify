@@ -15,7 +15,7 @@ import { Recompensa } from '../models/Recompensa';
 import { RecompensaService } from '../service/Recompensa.service';
 import { globalEnum } from '../globalEnum';
 import { Usuario } from '../models/Usuario';
-
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'recompensa-admin',
@@ -46,7 +46,7 @@ export class RecompensaAdminComponent implements OnInit {
     this.minDate = new Date();
     this.newRecompensa = new Recompensa({});
     this.recompensaPage = new MatTableDataSource<Recompensa>([new Recompensa({ "nombre": "Crear recompensa", "isEditable": true })]);
-    this.profesorId = Number(JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)).id);
+    this.profesorId = Number(JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))).id);
   }
 
 
@@ -95,7 +95,7 @@ export class RecompensaAdminComponent implements OnInit {
   }
 
   guardar() {
-    this.newRecompensa.profesor = JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)) as Usuario;
+    this.newRecompensa.profesor = JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))) as Usuario;
     const e = new Recompensa(this.newRecompensa);
     const fnames: string[] = [];        
     this.recompensaService.save(e).subscribe(data => {

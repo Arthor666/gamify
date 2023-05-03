@@ -1,7 +1,7 @@
 package com.gamificacion.demo.Enums;
 
 public enum ConstantsEnum {
-	PATHROOT ("D:/gamify/uploads/"),
+	PATHROOT ("/home/arturobriones115/gamify/"),
 	STATUSPORCOBRAR ("Por Cobrar"),
 	STATUSFINALIZADO ("Finalizada");
 	

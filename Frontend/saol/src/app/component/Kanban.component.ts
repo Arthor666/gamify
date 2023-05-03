@@ -14,7 +14,7 @@ import { ClasesService } from '../service/Clases.service';
 import { Clases } from '../models/Clases';
 import { ActivatedRoute } from '@angular/router';
 import { globalEnum } from '../globalEnum';
-
+import * as CryptoJS from 'crypto-js';
 
 
 @Component({
@@ -33,8 +33,8 @@ export class KanbanComponent implements OnInit {
   idEquipo: number;
 
   constructor(private route: ActivatedRoute, private statusService: StatusService, private tareaService: TareaService, private proyectoService: ProyectoService, private usuarioService: UsuarioService, private dialog: MatDialog, private clasesService: ClasesService) {
-    this.idEquipo = Number(this.route.snapshot.paramMap.get("idEquipo"));
-    this.cUsuario = JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage));
+    this.idEquipo = Number(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(this.route.snapshot.paramMap.get("idEquipo").replace("*", "/"), globalEnum.secret)));
+    this.cUsuario = JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret)));
   }
 
   public ngOnInit(): void {    

@@ -25,6 +25,9 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.gamificacion.demo.Models.Usuario;
 import com.gamificacion.demo.Repository.IUserRepository;
@@ -52,10 +55,10 @@ public class SecurityConfig{
 
 	@Bean
 	public SecurityFilterChain securityFilterChain (HttpSecurity http)  throws Exception{
-		http.csrf().disable().
+		http.cors().and().csrf().disable().
 		authorizeRequests().
-		//antMatchers("/**/auth/**","/**/user/user","/**/rol/all").
-		antMatchers("/**").
+		antMatchers("/**/auth/**","/**/user/user","/**/rol/all","/**/correo/**").
+		//antMatchers("/**").
 		permitAll().
 		anyRequest().
 		authenticated().
@@ -64,7 +67,7 @@ public class SecurityConfig{
 		sessionCreationPolicy(SessionCreationPolicy.STATELESS).
 		and().				
 		authenticationProvider(authenticationProvider()).
-		addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);	
+		addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
 	
@@ -81,6 +84,24 @@ public class SecurityConfig{
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
 	    return authenticationConfiguration.getAuthenticationManager();
 	}
+	
+	@Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        final CorsConfiguration configuration = new CorsConfiguration();
+        configuration.getAllowedOriginPatterns();
+        configuration.addAllowedOriginPattern("*");
+        configuration.setAllowedMethods(java.util.Arrays.asList("HEAD",
+                "GET", "POST", "PUT", "DELETE", "PATCH"));
+        // setAllowCredentials(true) is important, otherwise:
+        // The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
+        configuration.setAllowCredentials(true);
+        // setAllowedHeaders is important! Without it, OPTIONS preflight request
+        // will fail with 403 Invalid CORS request
+        configuration.setAllowedHeaders(java.util.Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
 
 	@Bean

@@ -9,6 +9,7 @@ export class Grupo {
   equipos: Array<Equipo>;
   alumnos: Array<Usuario>;  
   profesor: Usuario;
+  encryptedId: string;
 
   constructor(grupo: any) {
     this.id = grupo.id;

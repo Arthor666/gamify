@@ -15,41 +15,41 @@ import { UsuarioComponent } from './component/Usuario.component';
 import { UsuarioRecompensaComponent } from './component/UsuarioRecompensa.component';
 import { UsuarioRecompensaAdminComponent } from './component/UsuarioRecompensaAdmin.component';
 import { LoginComponent } from './component/Login.component';
-import { authGuardAlumnos} from './auth/auth.guard';
+import { authGuardAlumnos, authGuardCommons, authGuardProfesores, authGuardPublic} from './auth/auth.guard';
 import { MenuPrincipalComponent } from './component/MenuPrincipal.component';
 import { MenuEquipoComponent } from './component/MenuEquipo.component';
 import { HistoriasUsuarioComponent } from './component/HistoriasUsuario.component';
 import { ModifyUserComponent } from './component/ModifyUser.component';
 
-const commonRoutes: Routes = [
-  { path: 'menu', component: MenuPrincipalComponent },
-  { path: 'modificar', component: ModifyUserComponent }
+
+const publicRoutes: Routes = [
+  { path: 'signin', component: SigninComponent, canActivate: [authGuardPublic] },
+  { path: 'login', component: LoginComponent, canActivate: [authGuardPublic] }
+]
+const commonRoutes: Routes = [  
+  { path: 'menu', component: MenuPrincipalComponent, canActivate: [authGuardCommons] },
+  { path: 'modificar', component: ModifyUserComponent, canActivate: [authGuardCommons] },  
 ];
 const alumnoRoutes: Routes = [
   { path: 'tarea/:idEquipo', component: TareaComponent, canActivate: [authGuardAlumnos] },
   { path: 'kanban/:idEquipo', component: KanbanComponent, canActivate: [authGuardAlumnos] },
   { path: 'menuEquipo/:idEquipo', component: MenuEquipoComponent, canActivate: [authGuardAlumnos] },
   { path: 'historia/:idEquipo', component: HistoriasUsuarioComponent, canActivate: [authGuardAlumnos] },
-  { path: 'grupo', component: GrupoComponent },
+  { path: 'grupo', component: GrupoComponent, canActivate: [authGuardAlumnos] },
+  { path: 'proyecto', component: ProyectoComponent, canActivate: [authGuardAlumnos] },
+  { path: 'equipo', component: EquipoComponent, canActivate: [authGuardAlumnos] }
 ];
 const profesorRoutes: Routes = [
-  { path: 'equipoAdmin/:idGrupo', component: EquipoAdminComponent },
-  { path: 'proyectoAdmin', component: ProyectoAdminComponent },
-  { path: 'recompensaAdmin', component: RecompensaAdminComponent },  
-  { path: 'usuario/recompensa', component: UsuarioRecompensaComponent },
-  { path: 'admin/recompensa', component: UsuarioRecompensaAdminComponent },  
-  { path: 'usuarioAdmin', component: UsuarioComponent },
-  { path: 'equipo', component: EquipoComponent },
-  { path: 'recompensa', component: RecompensaComponent },
-  { path: 'proyecto', component: ProyectoComponent },
-  { path: 'grupoAdmin', component: GrupoAdminComponent },  
-  { path: 'signin', component: SigninComponent },
-  { path: 'login', component: LoginComponent }
+  { path: 'equipoAdmin/:idGrupo', component: EquipoAdminComponent, canActivate: [authGuardProfesores] },
+  { path: 'proyectoAdmin', component: ProyectoAdminComponent, canActivate: [authGuardProfesores] },
+  { path: 'recompensaAdmin', component: RecompensaAdminComponent, canActivate: [authGuardProfesores] },    
+  { path: 'usuarioAdmin', component: UsuarioComponent, canActivate: [authGuardProfesores] },  
+  { path: 'grupoAdmin', component: GrupoAdminComponent, canActivate: [authGuardProfesores] },    
 
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(profesorRoutes), RouterModule.forRoot(alumnoRoutes), RouterModule.forRoot(commonRoutes)],
+  imports: [RouterModule.forRoot(profesorRoutes), RouterModule.forRoot(alumnoRoutes), RouterModule.forRoot(commonRoutes), RouterModule.forRoot(publicRoutes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

@@ -5,7 +5,7 @@ import { Rol } from "../models/Rol";
 import { Usuario } from "../models/Usuario";
 import { AuthenticationService } from "../service/Authentication.service";
 import { RolService } from "../service/Rol.service";
-
+import * as CryptoJS from 'crypto-js';
 import { UsuarioService } from "../service/Usuario.service";
 
 @Component({
@@ -34,6 +34,6 @@ export class LoginComponent implements OnInit {
   registrar() {
     this.newUsuario.nombre = this.nombre + " " + this.pApellido + " " + this.sApellido;
     this.newUsuario.isActive = true;
-    this.usuarioService.save(this.newUsuario).subscribe(data => localStorage.setItem(globalEnum.usuarioLocalStorage,JSON.stringify(data)));
+    this.usuarioService.save(this.newUsuario).subscribe(data => localStorage.setItem(globalEnum.usuarioLocalStorage, CryptoJS.AES.encrypt(JSON.stringify(data), globalEnum.secret)));
   }
 }

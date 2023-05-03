@@ -21,7 +21,7 @@ import { ActivatedRoute } from '@angular/router';
 import { globalEnum } from '../globalEnum';
 import { HistoriaUsuarioService } from '../service/HistoriaUsuario.service';
 import { HistoriaUsuario } from '../models/HistoriaUsuario';
-
+import * as CryptoJS from 'crypto-js';
 
 
 @Component({
@@ -60,9 +60,9 @@ export class TareaComponent implements OnInit {
     this.minDate = new Date();
     this.newTarea = new Tarea({});
     this.files = [];
-    this.equipoId = Number(this.route.snapshot.paramMap.get("idEquipo"));
+    this.equipoId = Number(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(this.route.snapshot.paramMap.get("idEquipo").replace("*", "/"), globalEnum.secret)));
     this.tareaPage = new MatTableDataSource<Tarea>([new Tarea({ "nombre": "Crear tarea" })]);
-    this.usuarioId = Number(JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)).id);
+    this.usuarioId = Number(JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))).id);
   }
 
 

@@ -5,6 +5,7 @@ import { Rol } from "../models/Rol";
 import { Usuario } from "../models/Usuario";
 import { RolService } from "../service/Rol.service";
 import { UsuarioService } from "../service/Usuario.service";
+import * as CryptoJS from 'crypto-js';
 
 @Component({  
   templateUrl: '../html/ModifyUser.component.html',
@@ -21,7 +22,7 @@ export class ModifyUserComponent implements OnInit {
   nPassword: string;
 
   constructor(private snackBar: MatSnackBar, private rolService: RolService, private usuarioService: UsuarioService) {
-    this.cUser = JSON.parse(localStorage.getItem(globalEnum.usuarioLocalStorage)) as Usuario;
+    this.cUser = JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))) as Usuario;
     const splitNombre = this.cUser.nombre.split(" ");
     this.nombre = splitNombre[0];
     this.pApellido = splitNombre[1];
@@ -39,7 +40,7 @@ export class ModifyUserComponent implements OnInit {
     this.cUser.password = this.cPassword;
     this.usuarioService.update(this.cUser, this.nPassword, this.cPassword).subscribe(data => {
       this.cUser = data;
-      localStorage.setItem(globalEnum.usuarioLocalStorage, JSON.stringify(this.cUser));
+      localStorage.setItem(globalEnum.usuarioLocalStorage, CryptoJS.AES.encrypt(JSON.stringify(this.cUser), globalEnum.secret));
       this.snackBar.open("Usuario actualizado","Ok");
     });
   }
