@@ -143,12 +143,12 @@ import { TokenInterceptor } from './service/TokenInterceptor.service';
     MatDividerModule,
     MatListModule,
     MatMenuModule,
-    NgOptimizedImage 
+    NgOptimizedImage
   ],
   exports:[
-       
+
   ],
-  providers: [{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor,multi: true }],
+  providers: [DatePipe,{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor,multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
