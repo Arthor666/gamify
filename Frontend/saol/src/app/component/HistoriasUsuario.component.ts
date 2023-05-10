@@ -40,7 +40,7 @@ export class HistoriasUsuarioComponent implements OnInit {
   constructor(private snackBar: MatSnackBar, private route: ActivatedRoute, private historiaService: HistoriaUsuarioService, private statusService: StatusService) {
     this.newHistoria = new HistoriaUsuario({});
     this.historiaPage = new MatTableDataSource<HistoriaUsuario>([new HistoriaUsuario({ "nombre": "Crear historia" })]);
-    this.idEquipo = Number(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(this.route.snapshot.paramMap.get("idEquipo").replace("*", "/"), globalEnum.secret)));
+    this.idEquipo = Number(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(this.route.snapshot.paramMap.get("idEquipo").replaceAll("*", "/"), globalEnum.secret)));
   }
 
   buscar() {

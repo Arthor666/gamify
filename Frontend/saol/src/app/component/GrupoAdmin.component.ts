@@ -49,7 +49,7 @@ export class GrupoAdminComponent implements OnInit{
 
   iniciarPaginacion(data: Grupo[]): void {
     data.forEach(x => {
-      x.encryptedId = CryptoJS.AES.encrypt(x.id + "", globalEnum.secret).toString().replace("/","*");
+      x.encryptedId = CryptoJS.AES.encrypt(x.id + "", globalEnum.secret).toString().replaceAll("/","*");
     });
     this.grupoPage.data.push(...data);
     this.grupoPage.paginator = this.paginator;

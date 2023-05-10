@@ -33,7 +33,7 @@ export class KanbanComponent implements OnInit {
   idEquipo: number;
 
   constructor(private route: ActivatedRoute, private statusService: StatusService, private tareaService: TareaService, private proyectoService: ProyectoService, private usuarioService: UsuarioService, private dialog: MatDialog, private clasesService: ClasesService) {
-    this.idEquipo = Number(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(this.route.snapshot.paramMap.get("idEquipo").replace("*", "/"), globalEnum.secret)));
+    this.idEquipo = Number(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(this.route.snapshot.paramMap.get("idEquipo").replaceAll("*", "/"), globalEnum.secret)));
     this.cUsuario = JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret)));
   }
 

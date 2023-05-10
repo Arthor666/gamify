@@ -60,7 +60,7 @@ export class TareaComponent implements OnInit {
     this.minDate = new Date();
     this.newTarea = new Tarea({});
     this.files = [];
-    this.equipoId = Number(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(this.route.snapshot.paramMap.get("idEquipo").replace("*", "/"), globalEnum.secret)));
+    this.equipoId = Number(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(this.route.snapshot.paramMap.get("idEquipo").replaceAll("*", "/"), globalEnum.secret)));
     this.tareaPage = new MatTableDataSource<Tarea>([new Tarea({ "nombre": "Crear tarea" })]);
     this.usuarioId = Number(JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))).id);
   }

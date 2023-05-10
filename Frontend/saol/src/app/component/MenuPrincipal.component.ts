@@ -26,7 +26,7 @@ export class MenuPrincipalComponent implements OnInit {
   ngOnInit(): void {
     this.equipoService.getByUsuarioId(this.cUser.id, this.token).subscribe(data => {
       data.forEach(x => {
-        x.encryptedId = CryptoJS.AES.encrypt(x.id + "", globalEnum.secret).toString().replace("/", "*");
+        x.encryptedId = CryptoJS.AES.encrypt(x.id + "", globalEnum.secret).toString().replaceAll("/", "*");
       });
       this.listEquipos = data;
     });

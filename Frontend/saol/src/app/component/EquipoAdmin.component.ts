@@ -59,7 +59,7 @@ export class EquipoAdminComponent implements OnInit {
     this.equipoPage = new MatTableDataSource<Equipo>([new Equipo({ "nombre": "crear" })]);
     this.newEquipo = new Equipo({});
     this.profesorId = Number(JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))).id);
-    this.grupoId = Number(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(this.route.snapshot.paramMap.get("idGrupo").replace("*","/"), globalEnum.secret)));
+    this.grupoId = Number(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(this.route.snapshot.paramMap.get("idGrupo").replaceAll("*","/"), globalEnum.secret)));
   }
   ngOnInit(): void {
     this.equipoService.getByGrupoId(this.grupoId).subscribe(data => this.iniciarPaginacion(data));
