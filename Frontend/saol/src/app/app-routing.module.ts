@@ -20,6 +20,7 @@ import { MenuPrincipalComponent } from './component/MenuPrincipal.component';
 import { MenuEquipoComponent } from './component/MenuEquipo.component';
 import { HistoriasUsuarioComponent } from './component/HistoriasUsuario.component';
 import { ModifyUserComponent } from './component/ModifyUser.component';
+import { JuegoServidorComponent } from './component/JuegoServidor.component';
 
 
 const publicRoutes: Routes = [
@@ -37,7 +38,8 @@ const alumnoRoutes: Routes = [
   { path: 'historia/:idEquipo', component: HistoriasUsuarioComponent, canActivate: [authGuardAlumnos] },
   { path: 'grupo', component: GrupoComponent, canActivate: [authGuardAlumnos] },
   { path: 'proyecto', component: ProyectoComponent, canActivate: [authGuardAlumnos] },
-  { path: 'equipo', component: EquipoComponent, canActivate: [authGuardAlumnos] }
+  { path: 'equipo', component: EquipoComponent, canActivate: [authGuardAlumnos] },
+  { path: 'game/:idEquipo', component: JuegoServidorComponent, canActivate: [authGuardAlumnos] }
 ];
 const profesorRoutes: Routes = [
   { path: 'equipoAdmin/:idGrupo', component: EquipoAdminComponent, canActivate: [authGuardProfesores] },

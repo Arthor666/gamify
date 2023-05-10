@@ -6,6 +6,8 @@
 		<class>com.gamificacion.demo.Models.Solicitud</class>
 		<class>com.gamificacion.demo.Models.Status</class>
 		<class>com.gamificacion.demo.Models.Usuario</class>
+		<class>com.gamificacion.demo.Models.Equipo</class>
+		<class>com.gamificacion.demo.Models.JuegoServidor</class>
 		<properties>
 			<property name="javax.persistence.schema-generation.database.action" value="none"/>
 			<property name="javax.persistence.schema-generation.scripts.action" value="none"/>

@@ -1,0 +1,69 @@
+<div class="stats">
+    <div  class="imgstatus" (click)="openDialogHistoria()">
+        <mat-icon color="primary">help</mat-icon><span>Ayuda</span>
+    </div>
+    <div matTooltip="Consigue monedas terminando las historias de usuario de tu proyecto" class="imgstatus">
+        <img  ngSrc="../assets/monedas.png"  width="50" height="50" alt=""><span>{{juegoServidor.monedas}}</span>
+    </div>    
+    <div class="imgstatus">
+        <div *ngIf="showAnimation">
+            <img  class="kigif" ngSrc="../assets/ki.gif" width="50" height="50" alt="">
+        </div>        
+        <img  ngSrc="../assets/users.png"  width="50" height="50" alt=""><span>{{numberOfUsers}}</span>
+    </div>    
+</div>
+<mat-grid-list cols="5" rowHeight="80vh">
+    <mat-grid-tile [colspan] ="4">
+        <div *ngIf="juegoServidor.levelServer == 0">
+            <img  ngSrc="../assets/personaje1.png"  width="400" height="200" alt="">
+            <img  ngSrc="../assets/server1.png"  width="400" height="200" alt="">
+        </div>
+        <div *ngIf="juegoServidor.levelServer == 1">
+            <img  ngSrc="../assets/personaje1.png"  width="400" height="200" alt="">
+            <img  ngSrc="../assets/server2.png"  width="200" height="200" alt="">
+        </div>
+        <div *ngIf="juegoServidor.levelServer == 2">
+            <img  ngSrc="../assets/personaje2.png"  width="200" height="200" alt="">
+            <img  ngSrc="../assets/server3.png"  width="200" height="200" alt="">
+        </div>
+        <div *ngIf="juegoServidor.levelServer == 3">
+            <img  ngSrc="../assets/personaje2.png"  width="200" height="200" alt="">
+            <img  ngSrc="../assets/server4.png"  width="200" height="200" alt="">
+        </div>
+        <div *ngIf="juegoServidor.levelServer == 4">
+            <img  ngSrc="../assets/personaje3.png"  width="200" height="200" alt="">
+            <img  ngSrc="../assets/server5.png"  width="200" height="200" alt="">            
+        </div>
+        <div *ngIf="juegoServidor.levelServer == 5">
+            <img  ngSrc="../assets/personaje3.png"  width="200" height="200" alt="">            
+            <img  ngSrc="../assets/pochita.png"  width="50" height="50" alt="">
+        </div>
+    </mat-grid-tile>    
+    <mat-grid-tile [rowspan]="1" [colspan] ="1">
+        <div *ngIf="juegoServidor.levelServer < 5">
+            <div class="buttonContainer" >
+                <div *ngIf="juegoServidor.levelHdd == 0 && juegoServidor.monedas >= precio" >
+                    <img ngSrc="../assets/update.png" (click)="mejorarHdd()" width="20" height="20" alt="">
+                </div>                
+                <img ngSrc="../assets/hdd.png" width="50" height="50" alt=""><span>HDD ${{precio}}</span>
+            </div>
+            <div class="buttonContainer" >
+                <div *ngIf="juegoServidor.levelRam == 0 && juegoServidor.monedas >= precio">
+                    <img ngSrc="../assets/update.png" (click)="mejorarRam()" width="20" height="20" alt="">
+                </div>
+                <img ngSrc="../assets/ram.png" width="50" height="50" alt=""><span>RAM ${{precio}}</span>
+            </div>
+            <div class="buttonContainer" >
+                <div *ngIf="juegoServidor.levelRed == 0 && juegoServidor.monedas >= precio">
+                    <img ngSrc="../assets/update.png" (click)="mejorarRed()" width="20" height="20" alt="">
+                </div>
+                <img ngSrc="../assets/red.png" width="50" height="50" alt=""><span>RED ${{precio}}</span>
+            </div>
+            <div class="buttonContainer" >
+                <button (click)="cambiarServidor()" class="upgradeButton" [disabled]="isUpgradable()">Mejorar servidor ${{precio}}</button>
+            </div>    
+            
+        </div>    
+        
+    </mat-grid-tile>
+  </mat-grid-list>

@@ -26,7 +26,7 @@ export class MenuEquipoComponent implements OnInit {
   constructor(private route: ActivatedRoute, private dialog: MatDialog, private snackBar: MatSnackBar, private equipoService: EquipoService) {
     this.cUser = JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))) as Usuario;
     this.idEquipoCiphred = this.route.snapshot.paramMap.get("idEquipo");
-    this.idEquipo = Number(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(this.idEquipoCiphred.replace("*", "/"), globalEnum.secret)));
+    this.idEquipo = Number(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(this.idEquipoCiphred.replaceAll("*", "/"), globalEnum.secret)));
     this.token = JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))).token;
   }
   ngOnInit(): void {
