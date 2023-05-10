@@ -759,6 +759,25 @@ ALTER TABLE historias_usuario ADD COLUMN terminado TINYINT(1) NULL DEFAULT 0 AFT
 
 CREATE TABLE juego_servidor (id INTEGER AUTO_INCREMENT PRIMARY KEY, level_ram INTEGER, level_hdd INTEGER, level_red INTEGER, level_server INTEGER, id_equipo INTEGER UNIQUE, monedas DOUBLE, FOREIGN KEY (id_equipo) REFERENCES equipo(id));
 
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_monedas`(in idhistoria integer)
+BEGIN
+	DECLARE cterminado BOOLEAN DEFAULT false;
+    DECLARE idequipo integer;
+    DECLARE addedMonedas DOUBLE;
+    DECLARE idstatus integer;
+	SET cterminado := (SELECT terminado FROM historias_usuario WHERE id = idhistoria);
+    SET idstatus := (SELECT id_status FROM historias_usuario WHERE id = idhistoria);
+    SET idequipo := (SELECT id_equipo FROM historias_usuario WHERE id = idhistoria);
+    SET addedMonedas := (SELECT (((1000-(SELECT monedas+200*level_server+50*level_hdd+50*level_ram+50*level_red FROM juego_servidor WHERE id_equipo = idequipo))))/(SELECT count(*) FROM historias_usuario where id_equipo = idequipo AND terminado = false));
+    IF NOT cterminado AND idstatus = 12 THEN
+		UPDATE historias_usuario SET terminado = true WHERE id = idhistoria;
+        UPDATE juego_servidor SET monedas = monedas + addedMonedas  WHERE id_equipo = idequipo;
+    END IF;
+
+END
+;;
+DELIMITER ;
 
 DELIMITER ;;
 CREATE EVENT data_quemados ON SCHEDULE EVERY 24 HOUR STARTS CURRENT_TIMESTAMP DO
