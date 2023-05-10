@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 
 import com.gamificacion.demo.DTO.PuntosHistoriaDTO;
 import com.gamificacion.demo.Models.HistoriasUsuario;
@@ -19,5 +20,8 @@ public interface IHistoriaUsuarioRepository extends JpaRepository<HistoriasUsuar
 
 	@Query(value = "SELECT sum(puntos_historia) FROM historias_usuario WHERE id_equipo = ?1",nativeQuery = true)
 	double conteoDePuntos(int id);
+	
+	@Procedure("update_monedas")
+	void updateMonedas(int id);
 
 }

@@ -39,8 +39,12 @@ public class HistoriaUsuarioRestController {
 	@PostMapping("/historia")
 	public HistoriasUsuario save(@RequestBody LinkedHashMap linkedHashMap) {
 		HistoriasUsuario h = objectMapper.convertValue(linkedHashMap, HistoriasUsuario.class);
-		return historiaUsuarioRepository.save(h);
+		h = historiaUsuarioRepository.save(h);
+		historiaUsuarioRepository.flush();
+		historiaUsuarioRepository.updateMonedas(h.getId());
+		return h;
 	}
+	
 	
 	@PostMapping("/equipo/conteoPuntos")
 	public double getByPuntosByEquipoId(@RequestBody LinkedHashMap linkedHashMap){
