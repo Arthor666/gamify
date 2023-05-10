@@ -754,6 +754,12 @@ DELIMITER ;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2023-04-24 18:40:25
+
+ALTER TABLE historias_usuario ADD COLUMN terminado TINYINT(1) NULL DEFAULT 0 AFTER id_equipo;
+
+CREATE TABLE juego_servidor (id INTEGER AUTO_INCREMENT PRIMARY KEY, level_ram INTEGER, level_hdd INTEGER, level_red INTEGER, level_server INTEGER, id_equipo INTEGER UNIQUE, monedas DOUBLE, FOREIGN KEY (id_equipo) REFERENCES equipo(id));
+
+
 DELIMITER ;;
 CREATE EVENT data_quemados ON SCHEDULE EVERY 24 HOUR STARTS CURRENT_TIMESTAMP DO
  INSERT INTO quemado (id_equipo,puntos_quemado)  SELECT id_equipo,SUM(puntos_historia) FROM historias_usuario WHERE id_status=(SELECT id FROM status WHERE id_equipo IS NULL AND nombre ="Finalizado") GROUP BY id_equipo;
