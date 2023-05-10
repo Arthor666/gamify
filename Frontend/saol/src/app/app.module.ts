@@ -63,7 +63,8 @@ import { NgOptimizedImage } from '@angular/common';
 import { ModifyUserComponent } from './component/ModifyUser.component';
 import { DialogRecuperarCuentaComponent } from './component/DialogRecuperarCuenta.component';
 import { TokenInterceptor } from './service/TokenInterceptor.service';
-
+import { JuegoServidorComponent } from './component/JuegoServidor.component'
+import { DialogHistoriaJuegoComponent } from './component/DialogHistoriaJuego.component';
 
 
 
@@ -106,7 +107,9 @@ import { TokenInterceptor } from './service/TokenInterceptor.service';
     HistoriasUsuarioComponent,
     DialogDiagramaQuemadoComponent,
     ModifyUserComponent,
-    DialogRecuperarCuentaComponent
+    DialogRecuperarCuentaComponent,
+    JuegoServidorComponent,
+    DialogHistoriaJuegoComponent
   ],
   imports: [
     BrowserModule,

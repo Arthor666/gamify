@@ -1,0 +1,48 @@
+.stats{
+ display: flex;
+ align-items: center;
+ justify-content: end;
+}
+
+.imgstatus{
+    margin: 0px 30px;
+    display: flex;
+    align-items: center;
+}
+span{
+    margin-left: 10px;
+}
+
+.kigif{
+    position: absolute;
+    z-index: 1;
+    right: 4em;
+    top : 4em;
+}
+
+.buttonContainer{
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.buttonContainer:hover{
+    cursor: pointer;
+}
+
+.upgradeButton{
+    margin-top: 10px;
+    background-color: green;
+    color: white;
+    border: 1px solid white;
+    border-radius: 5px;
+    font-size: 1.5em;
+}
+.upgradeButton:hover{
+    background-color: #435b00;
+    cursor: pointer;
+}
+.upgradeButton:disabled{
+    background-color: gray;
+    cursor: auto;
+}
