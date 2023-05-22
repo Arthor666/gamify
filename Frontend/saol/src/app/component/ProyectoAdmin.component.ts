@@ -49,7 +49,7 @@ export class ProyectoAdminComponent implements OnInit {
     this.minDate = new Date();
     this.newProyecto = {};
     this.files = [];
-    this.proyectoPage = new MatTableDataSource<Proyecto>([new Proyecto({ "nombre": "crear equipo" })]);
+    this.proyectoPage = new MatTableDataSource<Proyecto>([new Proyecto({ "nombre": "crear proyecto" })]);
     this.profesorId = Number(JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(localStorage.getItem(globalEnum.usuarioLocalStorage), globalEnum.secret))).id);
   }
  

@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { globalEnum } from '../globalEnum';
 import { Usuario } from '../models/Usuario';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Injectable({ providedIn:"root" })
@@ -11,7 +12,7 @@ export class UsuarioService {
   getById(id: number): Observable<Usuario> {
     return this.http.post<Usuario>(globalEnum.url + "user/id", {"id":id}).pipe(catchError(this.handleError));
   }
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,private snackBar: MatSnackBar) {
 
   }
 
@@ -38,7 +39,7 @@ export class UsuarioService {
   }
 
   save(usuario: Usuario): Observable<Usuario> {
-    return this.http.post<Usuario>(globalEnum.url + "user/user", usuario).pipe(catchError(this.handleError));
+    return this.http.post<Usuario>(globalEnum.url + "user/user", usuario).pipe(catchError(this.handleError.bind(this)));
   }
 
   update(usuario: Usuario, newPassword: string, currentPassword: string): Observable<Usuario> {
@@ -49,6 +50,9 @@ export class UsuarioService {
     return this.http.post<Usuario[]>(globalEnum.url + "user/etiquetado", { "id": id }).pipe(catchError(this.handleError));
   }
   private handleError(error: HttpErrorResponse) {
+    if(error.status == 409){
+      this.snackBar.open("Ya existe un usuario con ese correo","Ok");
+    }
     if (error.status === 0) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error('An error occurred:', error.error);

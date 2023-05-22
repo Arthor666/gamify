@@ -1,62 +1,62 @@
 <div class="container">
   <mat-card class="card">
-    <mat-card-title style="text-align: center;">Ingresa en tu cuenta</mat-card-title>
+    <mat-card-title style="text-align: center;">Crea tu cuenta</mat-card-title>
     <br />
-    <mat-card-content style="text-align: center">
-      <mat-grid-list cols="2" rowHeight="100px">        
-
-        <mat-grid-tile [colspan]="1" [rowspan]="1">
-          <mat-form-field appearance="fill">
-            <mat-label>Nombre</mat-label>
-            <input [(ngModel)]="nombre" matInput>
-          </mat-form-field>
-        </mat-grid-tile>
-
-        <mat-grid-tile [colspan]="1" [rowspan]="1">
-          <mat-form-field appearance="fill">
-            <mat-label>Primer apellido</mat-label>
-            <input [(ngModel)]="pApellido" matInput>
-          </mat-form-field>
-        </mat-grid-tile>
-
-        <mat-grid-tile [colspan]="1" [rowspan]="1">
-          <mat-form-field appearance="fill">
-            <mat-label>Segundo apellido</mat-label>
-            <input [(ngModel)]="sApellido" matInput>
-          </mat-form-field>
-        </mat-grid-tile>
-
-        <mat-grid-tile [colspan]="1" [rowspan]="1">
-          <mat-form-field appearance="fill">
-            <mat-label>Correo</mat-label>
-            <input [(ngModel)]="newUsuario.correo" matInput>
-          </mat-form-field>
-        </mat-grid-tile>
-
-        <mat-grid-tile [colspan]="1" [rowspan]="1">
-          <mat-form-field appearance="fill">
-            <mat-label>Nombre usuario</mat-label>
-            <input [(ngModel)]="newUsuario.nombreUsuario" matInput>
-          </mat-form-field>
-        </mat-grid-tile>
-
-        <mat-grid-tile [colspan]="1" [rowspan]="1">
-          <mat-form-field appearance="fill">
-            <mat-label>Contraseña</mat-label>
-            <input type="password" [(ngModel)]="newUsuario.password" matInput>
-          </mat-form-field>
-        </mat-grid-tile>
-
-        <mat-grid-tile [colspan]="2" [rowspan]="1">
-          <mat-radio-group aria-label="Selecciona una opción" [(ngModel)]="newUsuario.rol">
-            <mat-radio-button *ngFor="let rol of rolList" [value]="rol">Soy {{rol.nombre}}</mat-radio-button>
-          </mat-radio-group>
-        </mat-grid-tile>
-
-      </mat-grid-list>      
-             
-      <button mat-raised-button (click)="registrar()" color="primary" cdkFocusInitial>Ingresar</button>
-    </mat-card-content><br />
+    <mat-card-content style="text-align: center">      
+        <form [formGroup]="userFromGroup">
+          <mat-grid-list cols="2" rowHeight="100px">        
+            <mat-grid-tile [colspan]="1" [rowspan]="1">
+              <mat-form-field appearance="fill">
+                <mat-label>Nombre</mat-label>
+                <input formControlName="nombre" matInput>
+              </mat-form-field>
+            </mat-grid-tile>
+    
+            <mat-grid-tile [colspan]="1" [rowspan]="1">
+              <mat-form-field appearance="fill">
+                <mat-label>Primer apellido</mat-label>
+                <input formControlName="pApellido" matInput>
+              </mat-form-field>
+            </mat-grid-tile>
+    
+            <mat-grid-tile [colspan]="1" [rowspan]="1">
+              <mat-form-field appearance="fill">
+                <mat-label>Segundo apellido</mat-label>
+                <input formControlName="sApellido" matInput>
+              </mat-form-field>
+            </mat-grid-tile>
+    
+            <mat-grid-tile [colspan]="1" [rowspan]="1">
+              <mat-form-field appearance="fill">
+                <mat-label>Correo</mat-label>
+                <input formControlName="correo" matInput>
+              </mat-form-field>
+            </mat-grid-tile>
+    
+            <mat-grid-tile [colspan]="1" [rowspan]="1">
+              <mat-form-field appearance="fill">
+                <mat-label>Nombre usuario</mat-label>
+                <input formControlName="nombreUsuario" matInput>
+              </mat-form-field>
+            </mat-grid-tile>
+    
+            
+            <mat-grid-tile matTooltip="La contraseña debe tener al menos 8 carácteres" [colspan]="1" [rowspan]="1">
+              <mat-form-field  appearance="fill">
+                <mat-label >Contraseña</mat-label>
+                <input  type="password" formControlName="password" matInput>
+              </mat-form-field>
+            </mat-grid-tile>
+      
+            <mat-grid-tile [colspan]="2" [rowspan]="1">
+              <mat-radio-group aria-label="Selecciona una opción" formControlName="rol">
+                <mat-radio-button *ngFor="let rol of rolList"  [value]="rol">Soy {{rol.nombre}}</mat-radio-button>
+              </mat-radio-group>
+            </mat-grid-tile>
+          </mat-grid-list>
+          <button disabled="{{!userFromGroup.valid}}" mat-raised-button (click)="registrar()" color="primary" cdkFocusInitial>Ingresar</button>
+        </form>                
+    </mat-card-content><br />    
     <mat-card-footer style="text-align: center">¿Ya estas registrado? <a routerLink="/signin">Ingesa a tu cuenta</a></mat-card-footer>
   </mat-card>
 </div>
