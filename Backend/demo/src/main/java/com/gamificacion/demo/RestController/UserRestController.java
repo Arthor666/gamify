@@ -118,7 +118,7 @@ public class UserRestController {
 		Usuario user = objectMapper.convertValue(linkedHashMap,Usuario.class);
 		Usuario usuarioExists =  userRepository.findByCorreo(user.getCorreo());
 		if(usuarioExists != null) {
-			return new ResponseEntity<Usuario>(user ,HttpStatus.CONFLICT);
+			return new ResponseEntity<Usuario>(usuarioExists,HttpStatus.CONFLICT);
 		}
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		/* La data tiene que viajar como un JSON
@@ -135,7 +135,7 @@ public class UserRestController {
     		
 		   }
 		 * */
-		return new ResponseEntity<Usuario>(user,HttpStatus.OK);
+		return new ResponseEntity<Usuario>(userRepository.save(user),HttpStatus.OK);
 	}
 	
 	@PostMapping("/available")
